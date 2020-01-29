@@ -1,0 +1,28 @@
+service: serverless-template-greet-api-layer
+package:
+  individually: true
+
+frameworkVersion: '>=1.1.0 <2.0.0'
+
+custom:
+  common_mappings: ${file(../../../serverless.common.yml):custom}
+  layers:
+    dev:
+      Greetdev:
+        package:
+          artifact: ./greet-api-layer.zip
+    staging:
+      Greetstaging:
+        package:
+          artifact: ./greet-api-layer.zip
+    prod:
+      Greetprod:
+        package:
+          artifact: ./greet-api-layer.zip
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage}
+  region: ${self:custom.common_mappings.region.${self:provider.stage}}
+layers: ${self:custom.layers.${self:provider.stage}}

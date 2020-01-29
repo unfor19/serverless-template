@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: |
+  serverless-template - Creates a private S3 Bucket
+Parameters:
+  AppName:
+    Type: String
+    Default: serverless-template
+  Stage:
+    Type: String
+    Description: Select the stage to deploy
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    ConstraintDescription: Must be any of the available options
+
+Resources:
+  TodoBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+Outputs:
+  TodoBucketRegionalDomainName:
+    Value: !GetAtt TodoBucket.RegionalDomainName
+  TodoBucketName:
+    Value: !Ref TodoBucket
+    Export:
+      Name: !Sub '${AppName}-todos-${Stage}'

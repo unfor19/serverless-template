@@ -1,0 +1,37 @@
+custom:
+  appname: "serverless-template"
+  memory_size:
+    local: 128
+    dev: 128
+    staging: 128
+    prod: 128
+  runtime:
+    local: nodejs12.x
+    dev: nodejs12.x
+    staging: nodejs12.x
+    prod: nodejs12.x
+  requireApiKey:
+    local: false
+    dev: true
+    staging: true
+    prod: true
+  allow_origin:
+    local: "http://localhost:8080"
+    dev: ""
+    staging: ""
+    prod: ""
+  region:
+    local: eu-west-1
+    dev: eu-west-1
+    staging: eu-west-1
+    prod: eu-west-1
+  user_pool_id:
+    local: eu-west-1_hash123
+    dev: eu-west-1_hash123
+    staging: ""
+    prod: ""
+  authorizer_cognito:
+    local: ""
+    dev: ""
+    staging: ""
+    prod: ""

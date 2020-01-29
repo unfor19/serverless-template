@@ -1,0 +1,13 @@
+{
+  "name": "serverless-template-todo-api-dependencies",
+  "version": "0.1.0",
+  "author": "Meir Gabay <unfor19@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/runtime": "^7.8.4",
+    "uuid": "^3.4.0"
+  },
+  "scripts": {
+    "addlayer": "yarn install --modules-folder ./node_modules"
+  }
+}

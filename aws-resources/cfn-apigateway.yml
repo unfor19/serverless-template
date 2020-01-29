@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: |
+  serverless-template - Creates an API-Gateway (apigw) of type REST and exports its ApiId and RootResourceId.
+  This apigw is used across all APIs.
+Parameters:
+  AppName:
+    Type: String
+    Default: serverless-template
+  Stage:
+    Type: String
+    Description: Select the stage to deploy
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    ConstraintDescription: Must be any of the available options
+
+Resources:
+  ApiGatewayRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Sub '${AppName}-rest-api-${Stage}'
+      Tags:
+        - Key: serverless-template
+          Value: True
+
+Outputs:
+  ApiGatewayRestApiId:
+    Value:
+      Ref: ApiGatewayRestApi
+    Export:
+      Name: !Sub '${AppName}-ApiGatewayRestApiId-${Stage}'
+  ApiGatewayRestApiRootResourceId:
+    Value:
+      Fn::GetAtt:
+        - ApiGatewayRestApi
+        - RootResourceId
+    Export:
+      Name: !Sub '${AppName}-ApiGatewayRestApiRootResourceId-${Stage}'

@@ -1,0 +1,49 @@
+service: serverless-template-greet-api
+package:
+  individually: true
+
+frameworkVersion: '>=1.1.0 <2.0.0'
+
+custom:
+  common_mappings: ${file(../../serverless.common.yml):custom}
+  layers:
+    - ${env:layer_arn}
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage}
+  region: ${self:custom.common_mappings.region.${self:provider.stage}}
+  memorySize: ${self:custom.common_mappings.memory_size.${self:provider.stage}}
+  environment:
+    STAGE: ${self:provider.stage}
+    REGION: ${self:provider.region}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource:
+        - 'Fn::Join':
+            - ':'
+            - - 'arn:aws:logs'
+              - Ref: 'AWS::Region'
+              - Ref: 'AWS::AccountId'
+              - 'log-group:/aws/lambda/*:*:*'
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': ${self:custom.common_mappings.appname}-ApiGatewayRestApiId-${self:provider.stage}
+    restApiRootResourceId:
+      'Fn::ImportValue': ${self:custom.common_mappings.appname}-ApiGatewayRestApiRootResourceId-${self:provider.stage}
+
+functions:
+  status:
+    handler: index.greet
+    package:
+      artifact: ./dist/dist_greet.zip
+    layers: ${self:custom.layers} # uuid
+    events:
+      - http:
+          path: greet/{name}
+          method: get

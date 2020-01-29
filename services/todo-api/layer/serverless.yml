@@ -1,0 +1,28 @@
+service: serverless-template-todo-api-layer
+package:
+  individually: true
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+custom:
+  common_mappings: ${file(../../../serverless.common.yml):custom}
+  layers:
+    dev:
+      Tododev:
+        package:
+          artifact: ./todo-api-layer.zip
+    staging:
+      Todostaging:
+        package:
+          artifact: ./todo-api-layer.zip
+    prod:
+      Todoprod:
+        package:
+          artifact: ./todo-api-layer.zip
+
+provider:
+  name: aws
+  runtime: ${self:custom.common_mappings.runtime.${self:provider.stage}}
+  stage: ${opt:stage}
+  region: ${self:custom.common_mappings.region.${self:provider.stage}}
+layers: ${self:custom.layers.${self:provider.stage}}

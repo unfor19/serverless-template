@@ -1,0 +1,24 @@
+{
+  "name": "serverless-template-greet-api",
+  "version": "0.1.0",
+  "author": "Meir Gabay <unfor19@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "bash ./build_api.sh",
+    "deploy:vault-dev": "export layer_arn=$(aws-vault exec sls-template-dev -- aws lambda list-layer-versions --layer-name Greetdev | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-dev -- sls deploy --stage=dev",
+    "deploy:vault-staging": "export layer_arn=$(aws-vault exec sls-template-dev -- aws lambda list-layer-versions --layer-name Greetstaging | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-dev -- sls deploy --stage=staging",
+    "deploy:vault-prod": "export layer_arn=$(aws-vault exec sls-template-prod -- aws lambda list-layer-versions --layer-name Greetprod | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-prod -- sls deploy --stage=prod",
+    "deploy:dev": "export layer_arn=$(aws lambda list-layer-versions --layer-name Greetdev | jq -r '.LayerVersions[0].LayerVersionArn') && sls deploy --stage=dev",
+    "deploy:staging": "export layer_arn=$(aws lambda list-layer-versions --layer-name Greetstaging | jq -r '.LayerVersions[0].LayerVersionArn') && sls deploy --stage=staging",
+    "deploy:prod": "export layer_arn=$(aws lambda list-layer-versions --layer-name Greetprod | jq -r '.LayerVersions[0].LayerVersionArn') && sls deploy --stage=prod",
+    "start:local": "serverless offline start --stage=local --noAuth",
+    "start:local:seed": "serverless offline start --stage=local --noAuth --seed",
+    "start:dev": "serverless offline start --stage=dev --noAuth",
+    "destroy:vault-dev": "aws-vault exec sls-template-dev -- sls remove --stage=dev",
+    "destroy:vault-staging": "aws-vault exec sls-template-dev -- sls remove --stage=staging",
+    "destroy:vault-prod": "aws-vault exec sls-template-prod -- sls remove --stage=prod",
+    "destroy:dev": "sls remove --stage=dev",
+    "destroy:staging": "sls remove --stage=staging",
+    "destroy:prod": "sls remove --stage=prod"
+  }
+}

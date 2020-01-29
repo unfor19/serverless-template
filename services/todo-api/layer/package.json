@@ -1,0 +1,22 @@
+{
+  "name": "serverless-template-todo-api-layer",
+  "version": "0.1.0",
+  "author": "Meir Gabay <unfor19@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "deploy:msg": "echo 'IMPORTANT! Do not forget to re-deploy the API to update Lambda Layer version'",
+    "build": "cd ./nodejs && yarn addlayer && cd ../.. && export FOLDER_NAME=$(basename $PWD) && cd layer && zip -rq $FOLDER_NAME-layer.zip nodejs",
+    "deploy:vault-dev": "aws-vault exec sls-template-dev -- sls deploy --stage=dev && yarn deploy:msg",
+    "deploy:vault-staging": "aws-vault exec sls-template-dev -- sls deploy --stage=staging && yarn deploy:msg",
+    "deploy:vault-prod": "aws-vault exec sls-template-prod -- sls deploy --stage=prod && yarn deploy:msg",
+    "deploy:dev": "sls deploy --stage=dev && yarn deploy:msg",
+    "deploy:staging": "sls deploy --stage=staging && yarn deploy:msg",
+    "deploy:prod": "sls deploy --stage=prod && yarn deploy:msg",
+    "destroy:vault-dev": "aws-vault exec sls-template-dev -- sls remove --stage=dev",
+    "destroy:vault-staging": "aws-vault exec sls-template-dev -- sls remove --stage=staging",
+    "destroy:vault-prod": "aws-vault exec sls-template-prod -- sls remove --stage=prod",
+    "destroy:dev": "sls remove --stage=dev",
+    "destroy:staging": "sls remove --stage=staging",
+    "destroy:prod": "sls remove --stage=prod"
+  }
+}
