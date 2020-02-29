@@ -80,6 +80,13 @@ Lambda@Edge Increase web application security
 
 ## APIs
 
+<details><summary>Project Tree
+</summary>
+
+![ProjectTree](./assets/project-tree-L3.png)
+
+</details>
+
 - Each API is an isolated service that contains multiple functions
 - All APIs share the same API Gateway - easier to manage
 - The file [serverless.common.yml](./serverless.common.yml) contains mappings that are relevant to all APIs, such as: region, allow_origin, user_pool_id, etc.
@@ -110,13 +117,14 @@ Lambda@Edge Increase web application security
 </details>
 
 ## Requirements
+
 1. Clone this repository
 
 1. Use this [Docker image](https://hub.docker.com/repository/docker/unfor19/serverless-template)
-   -  AWS Credentials file
-      ```bash
-      $ (serverless-template) bash ./scripts/docker_run.sh
-      ```
+   - AWS Credentials file
+     ```bash
+     $ (serverless-template) bash ./scripts/docker_run.sh
+     ```
    - [aws-vault](https://github.com/99designs/aws-vault)
      ```bash
      $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
@@ -284,7 +292,9 @@ curl --location --request GET ${APIGATEWAY_ENDPOINT}/dev/todo/list
 ```
 
 #### Greet
+
 Replace `MY_NAME`
+
 ```bash
 MY_NAME=willy
 curl --location --request GET ${APIGATEWAY_ENDPOINT}/dev/greet/${MY_NAME}
@@ -294,13 +304,14 @@ curl --location --request GET ${APIGATEWAY_ENDPOINT}/dev/greet/${MY_NAME}
   </summary>
 
 ### Requirements
+
 1. Clone this repository
 
 1. Use this [Docker image](https://hub.docker.com/repository/docker/unfor19/serverless-template)
-   -  AWS Credentials file
-      ```bash
-      $ (serverless-template) bash ./scripts/docker_run.sh
-      ```
+   - AWS Credentials file
+     ```bash
+     $ (serverless-template) bash ./scripts/docker_run.sh
+     ```
    - aws-vault
      ```bash
      $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
@@ -360,11 +371,12 @@ curl --location --request GET ${APIGATEWAY_ENDPOINT}/dev/greet/${MY_NAME}
 _TODO_: Create a script for that
 
 4. Modify code in `src` and then build
+
    ```bash
    $ (serverless-template/services/todo-api): yarn build:dev
    $ (serverless-template/services/greet-api): yarn build  # it's the same for all stages in Python
    ```
-   
+
 _TODO_: Create a script for that
 
 ### Manage Dependencies
@@ -453,7 +465,7 @@ $ (serverless-template/aws-resources): yarn destroy:dev
 - [AWS Docs - Best Practices for Working with AWS Lambda Functions](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html)
 - [AWS Blog - 10 Things Serverless Architects Should Know](https://aws.amazon.com/blogs/architecture/ten-things-serverless-architects-should-know/)
 - [AWS Blog - Best Practices for Developing on AWS Lambda
-](https://aws.amazon.com/blogs/architecture/best-practices-for-developing-on-aws-lambda/)
+  ](https://aws.amazon.com/blogs/architecture/best-practices-for-developing-on-aws-lambda/)
 - [Git Repo - AWS Serverless Workshops](https://github.com/aws-samples/aws-serverless-workshops)
 
 ## Contributing
@@ -465,9 +477,9 @@ individual change you make. These are the steps:
 
 1. Fork the repo.
 2. Create your feature branch from master (`git checkout -b my-new-feature`).
-4. Commit your awesome changes (`git commit -am 'Added some feature'`).
-5. Push to the branch (`git push origin my-new-feature`).
-6. Create a new Pull Request and tell us about your changes.
+3. Commit your awesome changes (`git commit -am 'Added some feature'`).
+4. Push to the branch (`git push origin my-new-feature`).
+5. Create a new Pull Request and tell us about your changes.
 
 ## Authors
 
