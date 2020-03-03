@@ -7,31 +7,32 @@ fi
 
 # Default values
 region=
-stage=
 vault_profile=
 
 usage(){
   cat << EOF
-usage: bash ./scripts/dynamodb_backup -r eu-west-1 -t table_name
+usage: bash ./scripts/dynamodb_backup -r eu-west-1 -st table_name
 short    | full
 -region  | --region
--t       | --table_name
--v       | --vault_profile
+-st      | --src_table_name
+-p       | --vault_profile
 -h       | --help
 EOF
+
+exit
 }
 
 while [ "$1" != "" ]; do
     case $1 in
-        -region | --region )
+        -r | --region )
             shift
             region=$1
         ;;
-        -t | --table_name )
+        -st | --src_table_name )
             shift
-            table_name=$1
+            src_table_name=$1
         ;;
-        -v | --vault_profile )
+        -p | --vault_profile )
             shift
             vault_profile=$1
         ;;                          
@@ -44,12 +45,11 @@ while [ "$1" != "" ]; do
     shift
 done
 
-[[ -z $region ]] && echo "Region is required"; usage; exit
-[[ -z $stage ]] && echo "Stage is required"; usage; exit
-[[ -z $table_name ]] && echo "Table name is required"; usage; exit
+[[ -z ${region} ]] && echo "Region is required" && usage
+[[ -z ${src_table_name} ]] && echo "Table name is required" && usage
 
 if [[ -z $vault_profile ]]; then
-    $PYTHON_REF ./scripts/dynamodump.py -s ${table_name} -r $region -m backup
+    $PYTHON_REF ./scripts/dynamodump.py -s ${table_name} -r ${region} -m backup
 else
-    aws-vault exec $vault_profile -- $PYTHON_REF ./scripts/dynamodump.py -s ${table_name} -r $region -m backup
+    aws-vault exec $vault_profile -- $PYTHON_REF ./scripts/dynamodump.py -s ${src_table_name} -r ${region} -m backup
 fi
