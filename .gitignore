@@ -7,3 +7,5 @@ node_modules
 !.vscode
 __pycache__/
 !.dockerignore
+*.zip
+dist/
