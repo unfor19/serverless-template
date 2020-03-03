@@ -121,13 +121,21 @@ Lambda@Edge Increase web application security
 1. Clone this repository
 
 1. Use this [Docker image](https://hub.docker.com/repository/docker/unfor19/serverless-template)
-   - AWS Credentials file
-     ```bash
-     $ (serverless-template) bash ./scripts/docker_run.sh
-     ```
    - [aws-vault](https://github.com/99designs/aws-vault)
      ```bash
      $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
+     ```
+   - AWS Environment variables
+     ```bash
+     $ (serverless-template) export AWS_SECRET_ACCESS_KEY=A123123
+     $ (serverless-template) export AWS_ACCESS_KEY_ID=B1232123123
+     $ (serverless-template) export AWS_REGION=eu-west-1
+     $ (serverless-template) export AWS_PROFILE=sls-template-dev
+     $ (serverless-template) bash ./scripts/docker_run.sh
+     ```
+   - AWS Credentials & Config files
+     ```bash
+     $ (serverless-template) bash ./scripts/docker_run.sh
      ```
 
 <details><summary>Packages
