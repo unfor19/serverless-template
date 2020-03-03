@@ -4,7 +4,9 @@
   "author": "Meir Gabay <unfor19@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "bash ./build_api.sh",
+    "build:dev": "bash ./build_api.sh",
+    "build:staging": "bash ./build_api.sh",
+    "build:prod": "bash ./build_api.sh",
     "deploy:vault-dev": "export layer_arn=$(aws-vault exec sls-template-dev -- aws lambda list-layer-versions --layer-name Greetdev | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-dev -- sls deploy --stage=dev",
     "deploy:vault-staging": "export layer_arn=$(aws-vault exec sls-template-dev -- aws lambda list-layer-versions --layer-name Greetstaging | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-dev -- sls deploy --stage=staging",
     "deploy:vault-prod": "export layer_arn=$(aws-vault exec sls-template-prod -- aws lambda list-layer-versions --layer-name Greetprod | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-prod -- sls deploy --stage=prod",

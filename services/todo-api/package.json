@@ -36,9 +36,9 @@
     "zip-webpack-plugin": "^3.0.0"
   },
   "scripts": {
-    "build:dev": "yarn && webpack --config webpack.config.js --mode development",
-    "build:staging": "yarn && webpack --config webpack.config.js --mode production",
-    "build:prod": "yarn && webpack --config webpack.config.js --mode production",
+    "build:dev": "yarn install && webpack --config webpack.config.js --mode development",
+    "build:staging": "yarn install && webpack --config webpack.config.js --mode production",
+    "build:prod": "yarn install && webpack --config webpack.config.js --mode production",
     "deploy:vault-dev": "export layer_arn=$(aws-vault exec sls-template-dev -- aws lambda list-layer-versions --layer-name Tododev | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-dev -- sls deploy --stage=dev",
     "deploy:vault-staging": "export layer_arn=$(aws-vault exec sls-template-dev -- aws lambda list-layer-versions --layer-name Todostaging | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-dev -- sls deploy --stage=staging",
     "deploy:vault-prod": "export layer_arn=$(aws-vault exec sls-template-prod -- aws lambda list-layer-versions --layer-name Todoprod | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-prod -- sls deploy --stage=prod",
