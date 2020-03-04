@@ -1,0 +1,17 @@
+kind: pipeline
+name: serverless-template
+
+steps:
+  - name: docker
+    image: plugins/docker
+    settings:
+      repo: registry.hub.docker.com/unfor19/serverless-template
+      registry: registry.hub.docker.com
+      username:
+        from_secret: dockerhub_username
+      password:
+        from_secret: dockerhub_token
+      tags:
+        - latest
+        - "1.0"
+      dockerfile: Dockerfile
