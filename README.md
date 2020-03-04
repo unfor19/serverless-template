@@ -1,3 +1,5 @@
+![Serverless-Template](./assets/serverless-template-logo-oneline.png)
+
 # serverless-template
 
 Boilerplate template for the serverless-framework.
