@@ -2,11 +2,13 @@
 
 Boilerplate template for the serverless-framework.
 
-<details><summary><b>Theory</b>
+## Theory
+
+<details><summary><b>Expand/Collapse</b>
 
 </summary>
 
-## Concepts
+### Concepts
 
 Learn how to use the Serverless Framework, while taking advantage of AWS Lambda Function, Lambda Layer, and API Gateway.
 
@@ -40,7 +42,7 @@ Learn how to use the Serverless Framework, while taking advantage of AWS Lambda 
 
 ###### [Comparisons](https://serverless.com/learn/comparisons/)
 
-## Use Cases
+### Use Cases
 
 <details><summary>
 Serverless backend and Cron jobs
@@ -74,7 +76,7 @@ Lambda@Edge Increase web application security
 
 ###### [More use cases](https://serverless.com/learn/use-cases/)
 
-## APIs
+### APIs
 
 <details><summary>Project Tree
 </summary>
@@ -87,7 +89,7 @@ Lambda@Edge Increase web application security
 - All APIs share the same API Gateway - easier to manage
 - The file [serverless.common.yml](./serverless.common.yml) contains mappings that are relevant to all APIs, such as region, allow_origin, user_pool_id, and more
 
-### APIs Structure
+#### APIs Structure
 
 - serverless.yml - configuration for deployment - [Using Layers](https://serverless.com/framework/docs/providers/aws/guide/layers#using-your-layers)
 - layer - deployed separately, these are the dependencies
@@ -95,7 +97,7 @@ Lambda@Edge Increase web application security
 - package.json - contains the build, deploy and destroy scripts, and dev-dependencies
 - yarn.lock - contains the list of dev-dependencies and their versions
 
-## Layers
+### Layers
 
 - **Never run** `yarn add some_package` **in an API folder**
 - **Always use** `yarn add --dev some_package`**in an API folder**; Lambda Layer supplies the "real" dependencies
@@ -114,11 +116,59 @@ Lambda@Edge Increase web application security
 
 ## Requirements
 
+1. Install [Docker Engine](https://docs.docker.com/install/)
+
 1. Clone this repository
 
 1. Use this [Docker image](https://hub.docker.com/r/unfor19/serverless-template)
 
-   - [aws-vault](https://github.com/99designs/aws-vault)
+    <details><summary>Image Packages
+      </summary>
+
+    <table>
+      <tr>
+        <th>Package</th>
+        <th>Version</th>
+      </tr>
+      <tr>
+        <td>NodeJS</td>
+        <td>12.16.1</td>
+      </tr>
+      <tr>
+        <td>Python</td>
+        <td>3.8.1</td>
+      </tr>
+      <tr>
+        <td>bash</td>
+        <td>5.0.11</td>
+      </tr>
+      <tr>
+        <td>curl</td>
+        <td>7.67.0</td>
+      </tr>
+      <tr>
+        <td>jq</td>
+        <td>20191114-85-g260888d269</td>
+      </tr>
+      <tr>
+        <td>yarn</td>
+        <td>1.22.0</td>
+      </tr>
+      <tr>
+        <td>serverless-framework</td>
+        <td>1.64.0</td>
+      </tr>
+      <tr>
+        <td>TypeScript</td>
+        <td>3.8.2</td>
+      </tr>
+    </table>
+
+    </details>
+
+   <details><summary>Image Usage Examples</summary>
+
+   - With [aws-vault](https://github.com/99designs/aws-vault)
      ```bash
      $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
      ```
@@ -136,51 +186,9 @@ Lambda@Edge Increase web application security
      $ (serverless-template) bash ./scripts/docker_run.sh
      ```
 
-**Tip**: Take a look at the [docker_run](./scripts/docker_run.sh) script
+   **Tip**: Take a look at the [docker_run](./scripts/docker_run.sh) script
 
-<details><summary>Packages
-  </summary>
-
-<table>
-  <tr>
-    <th>Package</th>
-    <th>Version</th>
-  </tr>
-  <tr>
-    <td>NodeJS</td>
-    <td>12.16.1</td>
-  </tr>
-  <tr>
-    <td>Python</td>
-    <td>3.8.1</td>
-  </tr>
-  <tr>
-    <td>bash</td>
-    <td>5.0.11</td>
-  </tr>
-  <tr>
-    <td>curl</td>
-    <td>7.67.0</td>
-  </tr>
-  <tr>
-    <td>jq</td>
-    <td>20191114-85-g260888d269</td>
-  </tr>
-  <tr>
-    <td>yarn</td>
-    <td>1.22.0</td>
-  </tr>
-  <tr>
-    <td>serverless-framework</td>
-    <td>1.64.0</td>
-  </tr>
-  <tr>
-    <td>TypeScript</td>
-    <td>3.8.2</td>
-  </tr>
-</table>
-
-</details>
+   </details>
 
 ## Getting Started
 
