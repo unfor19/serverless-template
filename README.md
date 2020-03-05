@@ -460,7 +460,7 @@ Done in 43.59s.
    **Important!** Delete all the objects in the bucket before performing this action
 
    ```bash
-   /code/services/aws-resources (master)$ yarn destroy:dev
+   /code/aws-resources (master)$ yarn destroy:dev
    ```
 
 ---
