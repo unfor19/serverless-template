@@ -1,4 +1,6 @@
-![Serverless-Template](./assets/serverless-template-logo-oneline.png)
+<a href="https://github.com/unfor19/serverless-template#serverless-template">
+<img src="./assets/serverless-template-logo-oneline.png" alt="Serverless-Template" width="100% />
+</a>
 
 [![GitHub version](https://badge.fury.io/gh/unfor19%2Fserverless-template.svg)](https://badge.fury.io/gh/unfor19%2Fserverless-template)
 [![Build Status](https://cloud.drone.io/api/badges/unfor19/serverless-template/status.svg?ref=refs/heads/master)](https://cloud.drone.io/unfor19/serverless-template)
