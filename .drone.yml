@@ -1,5 +1,6 @@
 kind: pipeline
 name: serverless-template
+type: docker
 
 steps:
   - name: docker
@@ -11,7 +12,5 @@ steps:
         from_secret: dockerhub_username
       password:
         from_secret: dockerhub_token
-      tags:
-        - latest
-        - "1.0"
+      auto_tag: true
       dockerfile: Dockerfile
