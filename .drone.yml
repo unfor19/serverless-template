@@ -1,5 +1,6 @@
 kind: pipeline
 name: serverless-template
+type: docker
 
 steps:
   - name: docker
