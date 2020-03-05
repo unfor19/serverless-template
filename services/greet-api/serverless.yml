@@ -38,7 +38,7 @@ provider:
       'Fn::ImportValue': ${self:custom.common_mappings.appname}-ApiGatewayRestApiRootResourceId-${self:provider.stage}
 
 functions:
-  status:
+  greet:
     handler: index.greet
     package:
       artifact: ./dist/dist_greet.zip
