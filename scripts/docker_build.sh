@@ -1,5 +1,6 @@
 #!/bin/bash
 PROJECT_DIR="${PWD}"
+tag_version=latest
 
 error (){
     local msg=$1
@@ -10,9 +11,9 @@ error (){
 
 usage(){
   cat << EOF
-Usage: bash ./scripts/docker_build.sh -tv v1
+Usage: bash ./scripts/docker_build.sh -tv 1.0
 Short  | Full             | Default
--tv    | --tag_version    | Required
+-tv    | --tag_version    | latest
 -h     | --help
 EOF
 }

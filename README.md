@@ -1,5 +1,7 @@
 ![Serverless-Template](./assets/serverless-template-logo-oneline.png)
 
+[![Build Status](https://cloud.drone.io/api/badges/unfor19/serverless-template/status.svg?ref=refs/heads/master)](https://cloud.drone.io/unfor19/serverless-template)
+
 # serverless-template
 
 Boilerplate template for the serverless-framework.

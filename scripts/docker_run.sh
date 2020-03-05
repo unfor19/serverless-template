@@ -1,5 +1,5 @@
 #!/bin/bash
-tag_version=v2
+tag_version=tag_version
 
 # aws-vault
 if [[ ! -z $AWS_SESSION_TOKEN && ! -z $AWS_SECURITY_TOKEN ]]; then
