@@ -458,7 +458,7 @@ Done in 43.59s.
 1. Destroy S3 Bucket and API Gateway
 
    ```bash
-   /code/services/aws-resources (master)$ yarn destroy:dev
+   /code/aws-resources (master)$ yarn destroy:dev
    ```
 
 ---
@@ -490,4 +490,4 @@ Created and maintained by [Meir Gabay](https://github.com/unfor19)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details
