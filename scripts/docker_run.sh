@@ -1,5 +1,5 @@
 #!/bin/bash
-tag_version=v2
+tag_version=latest
 
 # aws-vault
 if [[ ! -z $AWS_SESSION_TOKEN && ! -z $AWS_SECURITY_TOKEN ]]; then
@@ -28,10 +28,18 @@ elif [[ ! -z $AWS_SECRET_ACCESS_KEY && \
         unfor19/serverless-template:${tag_version} bash
 
 # credentials & config files
-else
+elif [[ -d "${HOME}/.aws" && \
+        -f "${HOME}/.aws/credentials" && 
+        -f "${HOME}/.aws/config" ]]; then
     docker run -it --rm \
         --mount type=bind,source="${PWD}",target=/code \
         --mount type=bind,source="${HOME}/.aws/credentials",target=/root/.aws/credentials \
         --mount type=bind,source="${HOME}/.aws/config",target=/root/.aws/config \
-        unfor19/serverless-template:${tag_version} bash    
+        unfor19/serverless-template:${tag_version} bash
+
+# no credentials
+else
+    docker run -it --rm \
+        --mount type=bind,source="${PWD}",target=/code \
+        unfor19/serverless-template:${tag_version} bash
 fi
