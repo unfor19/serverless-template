@@ -6,7 +6,8 @@
 
 [![GitHub version](https://badge.fury.io/gh/unfor19%2Fserverless-template.svg)](https://badge.fury.io/gh/unfor19%2Fserverless-template)
 [![Build Status](https://cloud.drone.io/api/badges/unfor19/serverless-template/status.svg?ref=refs/heads/master)](https://cloud.drone.io/unfor19/serverless-template)
-[![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+[![serverless](http://public.serverless.com/badges/v3.svg)](https://www.serverless.com)
 
 Boilerplate template for the serverless-framework.
 
@@ -478,11 +479,17 @@ Report issues/questions/feature requests on in the [Issues](https://github.com/u
 
 Pull requests are welcome! Ideally, create a feature branch and issue for every single change you make. These are the steps:
 
-1. Fork the repo.
-2. Create your feature branch from master (`git checkout -b my-new-feature`).
-3. Commit your remarkable changes (`git commit -am 'Added some feature'`).
-4. Push to the branch (`git push origin my-new-feature`).
-5. Create a new Pull Request and tell us about your changes.
+1. Fork this repo
+2. Create your feature branch from master (`git checkout -b my-new-feature`)
+3. Commit your remarkable changes (`git commit -am 'Added some feature'`)
+4. Push to the branch (`git push --set-up-stream origin my-new-feature`)
+5. Create a new Pull Request and tell us about your changes
+
+## Connect
+
+- [Discord - ProdOps.io](https://discordapp.com/invite/nuxBfKm) - No sign-up process! Ask questions in #serverless
+
+- [Slack - Serverless Contributors](http://serverless-contrib.slack.com/) - Ask us questions in #help or #general - tag `@Meir Gabay`
 
 ## Authors
 
