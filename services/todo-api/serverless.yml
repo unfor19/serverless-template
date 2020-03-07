@@ -4,15 +4,17 @@ service: serverless-template-todo-api # stack name in cfn
 package:
   individually: true # selecting artifacts manually - zip files
 
-frameworkVersion: ">=1.1.0 <2.0.0"
+plugins:
+  - serverless-pseudo-parameters # use #{AWS::AccountId}, #{AWS::Region}, etc.
+  - serverless-latest-layer-version # when defined with "latest", gets the latest layer version
+
+frameworkVersion: '>=1.1.0 <2.0.0'
 
 # manage your values here, no reserved keywords here
 custom:
   common_mappings: ${file(../../serverless.common.yml):custom} # importing common values
-  todos_bucket_name:
-    "Fn::ImportValue": "${self:custom.common_mappings.appname}-todos-${self:provider.stage}"
-  layers: # an array of layers, in this case we only have one
-    - ${env:layer_arn}
+  todos_bucket_name: # the "database"
+    'Fn::ImportValue': '${self:custom.common_mappings.appname}-todos-${self:provider.stage}'
 
 # everything under provider, is a reserved keyword, e.g environment, layers, etc.
 provider:
@@ -21,7 +23,7 @@ provider:
   stage: ${opt:stage} # supplied with: yarn deploy:dev (sls deploy --stage=dev)
   region: ${self:custom.common_mappings.region.${self:provider.stage}}
   memorySize: ${self:custom.common_mappings.memory_size.${self:provider.stage}}
-  environment: # env vars that will be available for the functions
+  environment: # env vars that will be available in the functions
     STAGE: ${self:provider.stage}
     REGION: ${self:provider.region}
     TODOS_BUCKET_NAME: ${self:custom.todos_bucket_name}
@@ -34,23 +36,24 @@ provider:
         - logs:CreateLogStream
         - logs:PutLogEvents
       Resource:
-        - "Fn::Join":
-            - ":"
-            - - "arn:aws:logs"
-              - Ref: "AWS::Region"
-              - Ref: "AWS::AccountId"
-              - "log-group:/aws/lambda/*:*:*"
-  # the apigw that we previously created
+        - 'Fn::Join':
+            - ':'
+            - - 'arn:aws:logs'
+              - Ref: 'AWS::Region'
+              - Ref: 'AWS::AccountId'
+              - 'log-group:/aws/lambda/*:*:*'
+  # the apigw that we previously created in aws-resources
   apiGateway:
     restApiId:
-      "Fn::ImportValue": ${self:custom.common_mappings.appname}-ApiGatewayRestApiId-${self:provider.stage}
+      'Fn::ImportValue': ${self:custom.common_mappings.appname}-ApiGatewayRestApiId-${self:provider.stage}
     restApiRootResourceId:
-      "Fn::ImportValue": ${self:custom.common_mappings.appname}-ApiGatewayRestApiRootResourceId-${self:provider.stage}
+      'Fn::ImportValue': ${self:custom.common_mappings.appname}-ApiGatewayRestApiRootResourceId-${self:provider.stage}
 
   # this means ALL functions will use these layers
-  layers: ${self:custom.layers}
+  layers:
+    - arn:aws:lambda:${self:provider.region}:#{AWS::AccountId}:layer:Todo${self:provider.stage}:latest
 
-# finally define your functions
+# finally define your functions here
 functions:
   status:
     handler: index.status
@@ -66,7 +69,8 @@ functions:
     role: todoCreateRole # a specific role which allows creating S3 objects
     package:
       artifact: ./dist/dist_todo.zip # the package where the index.js is
-    layers: ${self:custom.layers} # in case you need a specific layer, it's an array of layers ARNs
+    layers: # in case you need a specific layer, it's an array of layers ARNs
+      - arn:aws:lambda:${self:provider.region}:#{AWS::AccountId}:layer:Todo${self:provider.stage}:latest
     events: # when to trigger this function? in this case, only with an http event
       - http:
           path: todo/create
@@ -120,7 +124,7 @@ resources:
       Type: AWS::IAM::Role
       Properties:
         AssumeRolePolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Principal:
@@ -130,7 +134,7 @@ resources:
         Policies:
           - PolicyName: root
             PolicyDocument:
-              Version: "2012-10-17"
+              Version: '2012-10-17'
               Statement:
                 - Effect: Allow
                   Action:
@@ -138,28 +142,28 @@ resources:
                     - logs:CreateLogStream
                     - logs:PutLogEvents
                   Resource:
-                    - "Fn::Join":
-                        - ":"
-                        - - "arn:aws:logs"
-                          - Ref: "AWS::Region"
-                          - Ref: "AWS::AccountId"
-                          - "log-group:/aws/lambda/*:*:*"
+                    - 'Fn::Join':
+                        - ':'
+                        - - 'arn:aws:logs'
+                          - Ref: 'AWS::Region'
+                          - Ref: 'AWS::AccountId'
+                          - 'log-group:/aws/lambda/*:*:*'
                 - Effect: Allow
                   Action:
                     - s3:ListBucket
                     - s3:PutObject
                   Resource:
-                    - "Fn::Join":
-                        - ""
-                        - - "arn:aws:s3:::"
+                    - 'Fn::Join':
+                        - ''
+                        - - 'arn:aws:s3:::'
                           - ${self:custom.todos_bucket_name}
-                          - "*"
+                          - '*'
 
     todoUpdateRole:
       Type: AWS::IAM::Role
       Properties:
         AssumeRolePolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Principal:
@@ -169,7 +173,7 @@ resources:
         Policies:
           - PolicyName: root
             PolicyDocument:
-              Version: "2012-10-17"
+              Version: '2012-10-17'
               Statement:
                 - Effect: Allow
                   Action:
@@ -177,27 +181,27 @@ resources:
                     - logs:CreateLogStream
                     - logs:PutLogEvents
                   Resource:
-                    - "Fn::Join":
-                        - ":"
-                        - - "arn:aws:logs"
-                          - Ref: "AWS::Region"
-                          - Ref: "AWS::AccountId"
-                          - "log-group:/aws/lambda/*:*:*"
+                    - 'Fn::Join':
+                        - ':'
+                        - - 'arn:aws:logs'
+                          - Ref: 'AWS::Region'
+                          - Ref: 'AWS::AccountId'
+                          - 'log-group:/aws/lambda/*:*:*'
                 - Effect: Allow
                   Action:
                     - s3:PutObject
                   Resource:
-                    - "Fn::Join":
-                        - ""
-                        - - "arn:aws:s3:::"
+                    - 'Fn::Join':
+                        - ''
+                        - - 'arn:aws:s3:::'
                           - ${self:custom.todos_bucket_name}
-                          - "*"
+                          - '*'
 
     todoGetRole:
       Type: AWS::IAM::Role
       Properties:
         AssumeRolePolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Principal:
@@ -207,7 +211,7 @@ resources:
         Policies:
           - PolicyName: root
             PolicyDocument:
-              Version: "2012-10-17"
+              Version: '2012-10-17'
               Statement:
                 - Effect: Allow
                   Action:
@@ -215,27 +219,27 @@ resources:
                     - logs:CreateLogStream
                     - logs:PutLogEvents
                   Resource:
-                    - "Fn::Join":
-                        - ":"
-                        - - "arn:aws:logs"
-                          - Ref: "AWS::Region"
-                          - Ref: "AWS::AccountId"
-                          - "log-group:/aws/lambda/*:*:*"
+                    - 'Fn::Join':
+                        - ':'
+                        - - 'arn:aws:logs'
+                          - Ref: 'AWS::Region'
+                          - Ref: 'AWS::AccountId'
+                          - 'log-group:/aws/lambda/*:*:*'
                 - Effect: Allow
                   Action:
                     - s3:GetObject*
                   Resource:
-                    - "Fn::Join":
-                        - ""
-                        - - "arn:aws:s3:::"
+                    - 'Fn::Join':
+                        - ''
+                        - - 'arn:aws:s3:::'
                           - ${self:custom.todos_bucket_name}
-                          - "*"
+                          - '*'
 
     todoDeleteRole:
       Type: AWS::IAM::Role
       Properties:
         AssumeRolePolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Principal:
@@ -245,7 +249,7 @@ resources:
         Policies:
           - PolicyName: root
             PolicyDocument:
-              Version: "2012-10-17"
+              Version: '2012-10-17'
               Statement:
                 - Effect: Allow
                   Action:
@@ -253,27 +257,27 @@ resources:
                     - logs:CreateLogStream
                     - logs:PutLogEvents
                   Resource:
-                    - "Fn::Join":
-                        - ":"
-                        - - "arn:aws:logs"
-                          - Ref: "AWS::Region"
-                          - Ref: "AWS::AccountId"
-                          - "log-group:/aws/lambda/*:*:*"
+                    - 'Fn::Join':
+                        - ':'
+                        - - 'arn:aws:logs'
+                          - Ref: 'AWS::Region'
+                          - Ref: 'AWS::AccountId'
+                          - 'log-group:/aws/lambda/*:*:*'
                 - Effect: Allow
                   Action:
                     - s3:DeleteObject
                   Resource:
-                    - "Fn::Join":
-                        - ""
-                        - - "arn:aws:s3:::"
+                    - 'Fn::Join':
+                        - ''
+                        - - 'arn:aws:s3:::'
                           - ${self:custom.todos_bucket_name}
-                          - "*"
+                          - '*'
 
     todoListRole:
       Type: AWS::IAM::Role
       Properties:
         AssumeRolePolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Principal:
@@ -283,7 +287,7 @@ resources:
         Policies:
           - PolicyName: root
             PolicyDocument:
-              Version: "2012-10-17"
+              Version: '2012-10-17'
               Statement:
                 - Effect: Allow
                   Action:
@@ -291,18 +295,18 @@ resources:
                     - logs:CreateLogStream
                     - logs:PutLogEvents
                   Resource:
-                    - "Fn::Join":
-                        - ":"
-                        - - "arn:aws:logs"
-                          - Ref: "AWS::Region"
-                          - Ref: "AWS::AccountId"
-                          - "log-group:/aws/lambda/*:*:*"
+                    - 'Fn::Join':
+                        - ':'
+                        - - 'arn:aws:logs'
+                          - Ref: 'AWS::Region'
+                          - Ref: 'AWS::AccountId'
+                          - 'log-group:/aws/lambda/*:*:*'
                 - Effect: Allow
                   Action:
                     - s3:ListBucket
                   Resource:
-                    - "Fn::Join":
-                        - ""
-                        - - "arn:aws:s3:::"
+                    - 'Fn::Join':
+                        - ''
+                        - - 'arn:aws:s3:::'
                           - ${self:custom.todos_bucket_name}
-                          - "*"
+                          - '*'
