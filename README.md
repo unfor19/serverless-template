@@ -397,22 +397,10 @@ curl --location --request GET "${APIGATEWAY_ENDPOINT}/dev/greet/${MY_NAME}"
 /code/services/todo-api/layer/nodejs (master)$ yarn add uuid # or any other package
 ```
 
-#### Layer name and package.json
-
-Make sure that your layer name in the serverless file is similar to the layer names in package.json
-
-```bash
-# todo-api/layer/serverless.yml
-custom.layers.[dev|staging|prod].[Tododev|Todostaging|Todoprod]
-
-# todo-api/package.json
-scripts: deploy:vault-dev|staging|prod .... --layer-name Tododev|Todostaging|Todoprod
-```
-
 #### Deploying a new Layer version
 
 ```bash
-/code/services/todo-api/layer (master)$ yarn deploy
+/code/services/todo-api/layer (master)$ yarn deploy:dev
 
 Serverless: Packaging service...
 ...
@@ -424,14 +412,12 @@ Done in 67.21s.
 
 ### Deploying and Redeploying the API
 
-1. Upon deployment, the deployment script gets the latest version of Lambda Layer
-2. When updating a Lambda Layer, you must re-deploy the API for it to use the latest Lambda Layer version
+When updating a Lambda Layer, you must re-deploy the API for it to use the latest Lambda Layer version
 
 ```bash
-/code/services/todo-api (master)$ yarn deploy
+/code/services/todo-api (master)$ yarn deploy:dev
 
 yarn run v1.21.1
-$ export layer_arn=$(aws-vault exec sls-template -- aws lambda list-layer-versions --layer-name Tododev | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template -- sls deploy --verbose --stage=dev
 ...
 Serverless: Checking Stack update progress...
 ...

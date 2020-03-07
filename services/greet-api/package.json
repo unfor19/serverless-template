@@ -4,15 +4,15 @@
   "author": "Meir Gabay <unfor19@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build:dev": "bash ./build_api.sh",
-    "build:staging": "bash ./build_api.sh",
-    "build:prod": "bash ./build_api.sh",
-    "deploy:vault-dev": "export layer_arn=$(aws-vault exec sls-template-dev -- aws lambda list-layer-versions --layer-name Greetdev | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-dev -- sls deploy --stage=dev",
-    "deploy:vault-staging": "export layer_arn=$(aws-vault exec sls-template-dev -- aws lambda list-layer-versions --layer-name Greetstaging | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-dev -- sls deploy --stage=staging",
-    "deploy:vault-prod": "export layer_arn=$(aws-vault exec sls-template-prod -- aws lambda list-layer-versions --layer-name Greetprod | jq -r '.LayerVersions[0].LayerVersionArn') && aws-vault exec sls-template-prod -- sls deploy --stage=prod",
-    "deploy:dev": "export layer_arn=$(aws lambda list-layer-versions --layer-name Greetdev | jq -r '.LayerVersions[0].LayerVersionArn') && sls deploy --stage=dev",
-    "deploy:staging": "export layer_arn=$(aws lambda list-layer-versions --layer-name Greetstaging | jq -r '.LayerVersions[0].LayerVersionArn') && sls deploy --stage=staging",
-    "deploy:prod": "export layer_arn=$(aws lambda list-layer-versions --layer-name Greetprod | jq -r '.LayerVersions[0].LayerVersionArn') && sls deploy --stage=prod",
+    "build:dev": "yarn install && bash ./build_api.sh",
+    "build:staging": "yarn install && bash ./build_api.sh",
+    "build:prod": "yarn install && bash ./build_api.sh",
+    "deploy:vault-dev": "aws-vault exec sls-template-dev -- sls deploy --stage=dev",
+    "deploy:vault-staging": "aws-vault exec sls-template-dev -- sls deploy --stage=staging",
+    "deploy:vault-prod": "aws-vault exec sls-template-prod -- sls deploy --stage=prod",
+    "deploy:dev": "sls deploy --stage=dev",
+    "deploy:staging": "sls deploy --stage=staging",
+    "deploy:prod": "sls deploy --stage=prod",
     "start:local": "serverless offline start --stage=local --noAuth",
     "start:local:seed": "serverless offline start --stage=local --noAuth --seed",
     "start:dev": "serverless offline start --stage=dev --noAuth",
@@ -22,5 +22,9 @@
     "destroy:dev": "sls remove --stage=dev",
     "destroy:staging": "sls remove --stage=staging",
     "destroy:prod": "sls remove --stage=prod"
+  },
+  "devDependencies": {
+    "serverless-latest-layer-version": "^2.1.0",
+    "serverless-pseudo-parameters": "^2.5.0"
   }
 }
