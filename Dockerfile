@@ -7,7 +7,7 @@ RUN \
     curl --silent -o /root/.git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh \
     && echo 'export PATH=$PATH:/usr/local/bin' >> /root/.bashrc \
     && echo 'source ~/.git-prompt.sh' >> /root/.bashrc \
-    && echo 'export PS1="\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1)$ "' >> /root/.bashrc    
+    && echo 'export PS1="\[\033[01;34m\]$ \w\[\033[00m\]$(__git_ps1) "' >> /root/.bashrc    
 
 WORKDIR /code
 CMD ["bash"]
