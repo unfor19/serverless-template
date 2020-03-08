@@ -11,193 +11,11 @@
 
 Boilerplate template for the serverless-framework.
 
-## Theory
-
-<details><summary><b>Expand/Collapse</b>
-
-</summary>
-
-### Concepts
-
-Learn how to use the Serverless Framework, while taking advantage of AWS Lambda Function, Lambda Layer, and API Gateway.
-
-#### AWS Lambda Function
-
-> _"AWS Lambda lets you run code without provisioning or managing servers. You pay only for the compute time you consume..."_ [[Source]](https://aws.amazon.com/lambda/)
-
-###### [Pricing](https://aws.amazon.com/lambda/pricing/), [Limits](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html), [CloudWatch Pricing](https://aws.amazon.com/cloudwatch/pricing/) and [S3 Pricing](https://aws.amazon.com/s3/pricing/)
-
----
-
-#### AWS Lambda Layer
-
-> _"...A layer is a ZIP archive that contains libraries, a [custom runtime](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html), or other dependencies. With layers, you can use libraries in your function without needing to include them in your deployment package..."_ [[Source]](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html)
-
-###### [S3 Pricing](https://aws.amazon.com/s3/pricing/)
-
----
-
-#### AWS API Gateway
-
-> _"...API Gateway handles all the tasks involved in accepting and processing up to hundreds of thousands of concurrent API calls, including traffic management, CORS support, authorization, and access control, throttling, monitoring, and API version management..."_ [[Source]](https://aws.amazon.com/api-gateway/)
-
-###### [Pricing](https://aws.amazon.com/api-gateway/pricing/) and [Limits](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html)
-
----
-
-#### Serverless Framework
-
-> _"The Serverless Framework helps you build serverless apps with radically less overhead and cost. It provides a powerful, unified experience to develop, deploy, test, secure and monitors your serverless applications..."_ [[Source]](https://serverless.com/framework/docs/)
-
-###### [Comparisons](https://serverless.com/learn/comparisons/)
-
-### Use Cases
-
-<details><summary>
-Serverless backend and Cron jobs
-</summary>
-
-![Serverless backend and Cron jobs](https://www.simform.com/wp-content/uploads/2018/08/Serverless-Examples-with-AWS-Lambda-Use-Cases.png 'Serverless backend and Cron jobs')
-
-[[Source]](https://www.simform.com/serverless-examples-aws-lambda-use-cases/)
-
-</details>
-
-<details><summary>
-Data processing
-</summary>
-
-![Data processing](https://d0.awsstatic.com/Test%20Images/MasonTests/Lambda/Lambda_FileProcessing.png 'Data processing')
-
-[[Source]](https://www.polyglotdeveloper.com/tools/2017-07-04-most-common-lambda-deployment-patterns/)
-
-</details>
-
-<details><summary>
-Lambda@Edge Increase web application security
-</summary>
-
-![Before](./assets/example-lambdaatedge-before.png 'Before')
-
-![After](./assets/example-lambdaatedge-after.png 'After')
-
-</details>
-
-###### [More use cases](https://serverless.com/learn/use-cases/)
-
-### APIs
-
-<details><summary>Project Tree
-</summary>
-
-![ProjectTree](./assets/project-tree-L3.png)
-
-</details>
-
-- Each API is an isolated service that contains multiple functions
-- All APIs share the same API Gateway - easier to manage
-- The file [serverless.common.yml](./serverless.common.yml) contains mappings that are relevant to all APIs, such as region, allow_origin, user_pool_id, and more
-
-#### APIs Structure
-
-- serverless.yml - configuration for deployment - [Using Layers](https://serverless.com/framework/docs/providers/aws/guide/layers#using-your-layers)
-- layer - deployed separately, these are the dependencies
-- src - source code of API that is deployed by serverless
-- package.json - contains the build, deploy and destroy scripts, and dev-dependencies
-- yarn.lock - contains the list of dev-dependencies and their versions
-
-### Layers
-
-- **Never run** `yarn add some_package` **in an API folder**
-- **Always use** `yarn add --dev some_package`**in an API folder**; Lambda Layer supplies the "real" dependencies
-- There's no need to create a layer for AWS SDK (e.g aws-sdk, boto3) - These libraries are [provided by AWS automatically](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
-
-#### Layer Structure
-
-- serverless.yml - configuration for deploying the layer - [Deploying Layers](https://serverless.com/framework/docs/providers/aws/guide/layers#configuration)
-- package.json - contains the scripts for building, deploying and destroying the layer
-- nodejs/package.json - contains the dependencies that will be uploaded with this layer
-- nodejs/yarn.lock - contains the list of dependencies and their versions
-
----
-
-</details>
-
 ## Requirements
 
+1. AWS account
+
 1. Install [Docker Engine](https://docs.docker.com/install/)
-
-1. Clone this repository
-
-1. Use this [Docker image](https://hub.docker.com/r/unfor19/serverless-template)
-
-    <details><summary>Image Packages
-      </summary>
-
-    <table>
-      <tr>
-        <th>Package</th>
-        <th>Version</th>
-      </tr>
-      <tr>
-        <td>NodeJS</td>
-        <td>12.16.1</td>
-      </tr>
-      <tr>
-        <td>Python</td>
-        <td>3.8.1</td>
-      </tr>
-      <tr>
-        <td>bash</td>
-        <td>5.0.11</td>
-      </tr>
-      <tr>
-        <td>curl</td>
-        <td>7.67.0</td>
-      </tr>
-      <tr>
-        <td>jq</td>
-        <td>20191114-85-g260888d269</td>
-      </tr>
-      <tr>
-        <td>yarn</td>
-        <td>1.22.0</td>
-      </tr>
-      <tr>
-        <td>serverless-framework</td>
-        <td>1.64.0</td>
-      </tr>
-      <tr>
-        <td>TypeScript</td>
-        <td>3.8.2</td>
-      </tr>
-    </table>
-
-    </details>
-
-   <details><summary>Image Usage Examples</summary>
-
-   - With [aws-vault](https://github.com/99designs/aws-vault)
-     ```bash
-     $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
-     ```
-   - AWS Environment variables
-     ```bash
-     $ (serverless-template) export AWS_SECRET_ACCESS_KEY=A123123
-     $ (serverless-template) export AWS_ACCESS_KEY_ID=B1232123123
-     $ (serverless-template) export AWS_REGION=eu-west-1
-     $ (serverless-template) export AWS_PROFILE=sls-template-dev
-     $ (serverless-template) bash ./scripts/docker_run.sh
-     ```
-   - AWS Credentials & Config files
-
-     ```bash
-     $ (serverless-template) bash ./scripts/docker_run.sh
-     ```
-
-   **Tip**: Take a look at the [docker_run](./scripts/docker_run.sh) script
-
-   </details>
 
 ## Getting Started
 
@@ -206,99 +24,88 @@ Lambda@Edge Increase web application security
 
 Deploy two serverless services (APIs)
 
-- todo-api: NodeJS 12.x (TypeScript) - ([CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete))
+- todo-api - NodeJS 12.x (JavaScript/TypeScript)
+  - [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) app - To keep it simple, we're using an S3 bucket as a database. The contents are saved to the objects' [user-defined metadata](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html)
+- greet-api - Python 3.8
+  - Send a name and get a greeting
 
-  <details><summary>Result</summary>
-
-  ![serverless-template-crud](./assets/serverless-template-crud.png)
-
-  </details>
-
-- greet-api: Python 3.8 - Send a name and get a greeting
-
-To keep it simple, we're using an S3 bucket as a database. The contents are saved to the objects' [user-defined metadata](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html).
+Both services have dependencies, and we'll use Lambda Layers to meet these dependencies.
 
 </details>
 
-1. :whale2: Run Container
+:arrow_down: Clone this repository (or [Use as template](https://github.com/unfor19/serverless-template/generate))
 
-   ```bash
-   $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
-   ...                     # Pulling image ...
-   /code (master)$         # We're in!
-   ```
+```bash
+$ (home) git clone https://github.com/unfor19/serverless-template.git
+```
 
-1. :hammer: Build App - this includes installing dependencies
+:whale2: Use this [Docker image](https://hub.docker.com/r/unfor19/serverless-template)
 
-   ```bash
-    /code (master)$ bash ./scripts/app_build.sh
-    🔎  Identifying services folders ...
-    ...
-    ✅  Finished
-   ```
+   <details><summary>Image Usage Examples</summary>
 
-1. :arrows_clockwise: Deploy AWS resources - S3 Bucket and API Gateway
+- With [aws-vault](https://github.com/99designs/aws-vault)
+  ```bash
+  $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
+  ```
+- AWS Environment variables
+  ```bash
+  $ (serverless-template) export AWS_SECRET_ACCESS_KEY=A123123
+  $ (serverless-template) export AWS_ACCESS_KEY_ID=B1232123123
+  $ (serverless-template) export AWS_REGION=eu-west-1
+  $ (serverless-template) export AWS_PROFILE=my-profile-name
+  $ (serverless-template) bash ./scripts/docker_run.sh
+  ```
+- AWS Credentials & Config files
 
-   ```bash
-   /code/aws-resources (master)$ yarn deploy:dev
-   ```
+  ```bash
+  $ (serverless-template) bash ./scripts/docker_run.sh
+  ```
 
-    <details><summary>
-    CloudFormation templates
-    </summary>
+**Tip**: Take a look at the [docker_run](./scripts/docker_run.sh) script
 
-   #### API Gateway
+   </details>
 
-   [![Launch in Ireland](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png) Ireland (eu-west-1)](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/quickcreate?templateURL=https://unfor19-serverless-template.s3-eu-west-1.amazonaws.com/cfn-apigateway.yml)
+```bash
+$ (serverless-template) bash ./scripts/docker_run.sh
+...                     # Pulling image ...
+$ /code (master)        # We're in!
+```
 
-   #### S3 Bucket
+:hammer: Build App - this includes installing dependencies
 
-   [![Launch in Ireland](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png) Ireland (eu-west-1)](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/quickcreate?templateURL=https://unfor19-serverless-template.s3-eu-west-1.amazonaws.com/cfn-s3.yml)
+```bash
+ $ /code (master) bash ./scripts/app_build.sh
+ 🔎  Identifying services folders ...
+ ...
+ ✅  Finished
+```
 
-     <details><summary>
-     More regions
-     </summary>
+:arrows_clockwise: Deploy AWS resources - S3 Bucket and API Gateway
 
-   To deploy in other regions, replace AWS_REGION with the region's code.
+```bash
+$ /code/aws-resources (master) yarn deploy:dev
+```
 
-   **API Gateway**
+:arrows_clockwise: Deploy AWS Lambda Layers
 
-   ```bash
-   https://AWS_REGION.console.aws.amazon.com/cloudformation/home?region=AWS_REGION#/stacks/quickcreate?templateURL=https://
-   serverless-template.s3-eu-west-1.amazonaws.com/cfn-apigateway.yml
-   ```
+```bash
+$ /code/services/todo-api/layer (master)   yarn deploy:dev
+$ /code/services/greet-api/layer (master)  yarn deploy:dev
+```
 
-   **S3 Bucket**
+:arrows_clockwise: Deploy AWS Lambda Functions
 
-   ```bash
-   https://AWS_REGION.console.aws.amazon.com/cloudformation/home?region=AWS_REGION#/stacks/quickcreate?templateURL=https://
-   serverless-template.s3-eu-west-1.amazonaws.com/cfn-s3.yml
-   ```
-
-     </details>
-
-     </details>
-
-1. :arrows_clockwise: Deploy AWS Lambda Layers
-
-   ```bash
-   /code/services/todo-api/layer (master)$   yarn deploy:dev
-   /code/services/greet-api/layer (master)$  yarn deploy:dev
-   ```
-
-1. :arrows_clockwise: Deploy AWS Lambda Functions
-
-   ```bash
-   /code/services/todo-api (master)$  yarn deploy:dev
-   /code/services/greet-api (master)$ yarn deploy:dev
-   ```
+```bash
+$ /code/services/todo-api (master)  yarn deploy:dev
+$ /code/services/greet-api (master) yarn deploy:dev
+```
 
 ## Usage
 
 Replace `ENDPOINT` with the API Gateway's endpoint that was generated by serverless-framework, and `AWS_REGION` with the relevant region.
 
 ```bash
-/code (master)$ APIGATEWAY_ENDPOINT=https://ENDPOINT.execute-api.AWS_REGION.amazonaws.com
+$ /code (master) APIGATEWAY_ENDPOINT=https://ENDPOINT.execute-api.AWS_REGION.amazonaws.com
 ```
 
 #### Create
@@ -373,55 +180,51 @@ curl --location --request GET "${APIGATEWAY_ENDPOINT}/dev/greet/${MY_NAME}"
 
 1. Use this [Docker image](https://hub.docker.com/r/unfor19/serverless-template)
 
-1. Install dev-dependencies for each API
+1. Install dependencies for each API
 
    ```bash
-   /code/services/todo-api (master)$  yarn install
-   /code/services/greet-api (master)$ yarn install
+   $ /code/services/todo-api (master)  yarn install
+   $ /code/services/greet-api (master) yarn install
    ```
 
 1. Modify code in `src` and then build
 
    ```bash
-   /code/services/todo-api (master)$ yarn build:dev
-   /code/services/todo-api (master)$ yarn build:dev
+   $ /code/services/todo-api (master)  yarn build:dev
+   $ /code/services/greet-api (master) yarn build:dev
    ```
 
 ### Manage Dependencies
 
 #### Adding a new dependency
 
-`layer: yarn add package_name`
+**NodeJS** - `yarn add package_name`
 
 ```bash
-/code/services/todo-api/layer/nodejs (master)$ yarn add uuid # or any other package
+$ /code/services/todo-api/layer/nodejs (master) yarn add uuid # or any other package
+```
+
+**Python** - update the requirements.txt file
+
+```bash
+$ /code (master) cat ./services/greet-api/layer/python/requirements.txt
+greetings==0.1.0
 ```
 
 #### Deploying a new Layer version
 
 ```bash
-/code/services/todo-api/layer (master)$ yarn deploy:dev
-
-Serverless: Packaging service...
-...
-Serverless: Checking Stack update progress...
-...
-IMPORTANT! Do not forget to re-deploy the API to update Lambda Layer version
-Done in 67.21s.
+$ /code/services/todo-api/layer (master)  yarn deploy:dev
+$ /code/services/greet-api/layer (master) yarn deploy:dev
 ```
 
 ### Deploying and Redeploying the API
 
-When updating a Lambda Layer, you must re-deploy the API for it to use the latest Lambda Layer version
+When updating a Lambda Layer, you must re-deploy the API for it to use the latest Lambda Layer version.
 
 ```bash
-/code/services/todo-api (master)$ yarn deploy:dev
-
-yarn run v1.21.1
-...
-Serverless: Checking Stack update progress...
-...
-Done in 43.59s.
+$ /code/services/todo-api (master)  yarn deploy:dev
+$ /code/services/greet-api (master) yarn deploy:dev
 ```
 
 </details>
@@ -431,22 +234,136 @@ Done in 43.59s.
 1. Destroy AWS Lambda Functions
 
    ```bash
-   /code/services/todo-api (master)$  yarn destroy:dev
-   /code/services/greet-api (master)$ yarn destroy:dev
+   $ /code/services/todo-api (master)  yarn destroy:dev
+   $ /code/services/greet-api (master) yarn destroy:dev
    ```
 
 1. Destroy AWS Lambda Layers
 
    ```bash
-   /code/services/todo-api/layer (master)$  yarn destroy:dev
-   /code/services/greet-api/layer (master)$ yarn destroy:dev
+   $ /code/services/todo-api/layer (master)  yarn destroy:dev
+   $ /code/services/greet-api/layer (master) yarn destroy:dev
    ```
 
 1. Destroy S3 Bucket and API Gateway
 
    ```bash
-   /code/services/aws-resources (master)$ yarn destroy:dev
+   $ /code/services/aws-resources (master) yarn destroy:dev
    ```
+
+## Theory
+
+<details><summary><b>Expand/Collapse</b>
+
+</summary>
+
+### Concepts
+
+Learn how to use the Serverless Framework, while taking advantage of AWS Lambda Function, Lambda Layer, and API Gateway.
+
+#### AWS Lambda Function
+
+> _"AWS Lambda lets you run code without provisioning or managing servers. You pay only for the compute time you consume..."_ [[Source]](https://aws.amazon.com/lambda/)
+
+###### [Pricing](https://aws.amazon.com/lambda/pricing/), [Limits](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html), [CloudWatch Pricing](https://aws.amazon.com/cloudwatch/pricing/) and [S3 Pricing](https://aws.amazon.com/s3/pricing/)
+
+---
+
+#### AWS Lambda Layer
+
+> _"...A layer is a ZIP archive that contains libraries, a [custom runtime](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html), or other dependencies. With layers, you can use libraries in your function without needing to include them in your deployment package..."_ [[Source]](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html)
+
+###### [S3 Pricing](https://aws.amazon.com/s3/pricing/)
+
+---
+
+#### AWS API Gateway
+
+> _"...API Gateway handles all the tasks involved in accepting and processing up to hundreds of thousands of concurrent API calls, including traffic management, CORS support, authorization, and access control, throttling, monitoring, and API version management..."_ [[Source]](https://aws.amazon.com/api-gateway/)
+
+###### [Pricing](https://aws.amazon.com/api-gateway/pricing/) and [Limits](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html)
+
+---
+
+#### Serverless Framework
+
+> _"The Serverless Framework helps you build serverless apps with radically less overhead and cost. It provides a powerful, unified experience to develop, deploy, test, secure and monitors your serverless applications..."_ [[Source]](https://serverless.com/framework/docs/)
+
+###### [Comparisons](https://serverless.com/learn/comparisons/)
+
+Eventually, the serverless framework produces [CloudFormation templates](https://aws.amazon.com/cloudformation/resources/templates/), deploys stacks, and manages them.
+
+**Tip** After deploying with the serverless framework, check the stacks' templates, they look like a total mess. If you want to 'prettify' those YAML templates, click on `View in Designer` > Move one of the components, and then look below, your template was automatically 'prettified'
+
+### Use Cases
+
+<details><summary>
+Serverless backend and Cron jobs
+</summary>
+
+![Serverless backend and Cron jobs](https://www.simform.com/wp-content/uploads/2018/08/Serverless-Examples-with-AWS-Lambda-Use-Cases.png 'Serverless backend and Cron jobs')
+
+[[Source]](https://www.simform.com/serverless-examples-aws-lambda-use-cases/)
+
+</details>
+
+<details><summary>
+Data processing
+</summary>
+
+![Data processing](https://d0.awsstatic.com/Test%20Images/MasonTests/Lambda/Lambda_FileProcessing.png 'Data processing')
+
+[[Source]](https://www.polyglotdeveloper.com/tools/2017-07-04-most-common-lambda-deployment-patterns/)
+
+</details>
+
+<details><summary>
+Lambda@Edge Increase web application security
+</summary>
+
+![Before](./assets/example-lambdaatedge-before.png 'Before')
+
+![After](./assets/example-lambdaatedge-after.png 'After')
+
+</details>
+
+###### [More use cases](https://serverless.com/learn/use-cases/)
+
+### APIs
+
+<details><summary>Project Tree
+</summary>
+
+![ProjectTree](./assets/project-tree-L3.png)
+
+</details>
+
+- Each API is an isolated service that contains multiple functions
+- All APIs share the same API Gateway - easier to manage
+- The file [serverless.common.yml](./serverless.common.yml) contains mappings that are relevant to all APIs, such as region, allow_origin, user_pool_id, and more
+
+#### APIs Structure
+
+- serverless.yml - configuration for deployment - [Using Layers](https://serverless.com/framework/docs/providers/aws/guide/layers#using-your-layers)
+- layer - deployed separately, these are the dependencies
+- src - source code of API that is deployed by serverless
+- package.json - contains the build, deploy and destroy scripts, and dev-dependencies
+- yarn.lock - contains the list of dev-dependencies and their versions
+
+### Layers
+
+- **Never run** `yarn add some_package` **in an API folder**
+- **Always use** `yarn add --dev some_package`**in an API folder**; Lambda Layer supplies the "real" dependencies
+- There's no need to create a layer for AWS SDK (e.g., aws-sdk, boto3) - These libraries are [provided by AWS automatically](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
+
+#### Layer Structure
+
+- serverless.yml - configuration for deploying the layer - [Deploying Layers](https://serverless.com/framework/docs/providers/aws/guide/layers#configuration)
+- package.json - contains the scripts for building, deploying and destroying the layer
+- nodejs/package.json - contains the dependencies that are uploaded with this layer
+- nodejs/yarn.lock - contains the list of dependencies and their versions
+
+</details>
 
 ---
 
@@ -458,6 +375,97 @@ Done in 43.59s.
 - [AWS Blog - Best Practices for Developing on AWS Lambda
   ](https://aws.amazon.com/blogs/architecture/best-practices-for-developing-on-aws-lambda/)
 - [Git Repo - AWS Serverless Workshops](https://github.com/aws-samples/aws-serverless-workshops)
+- [serverless-template Docker image](https://hub.docker.com/r/unfor19/serverless-template) packages
+
+   <details><summary>Expand/Collapse
+     </summary>
+
+   <table>
+     <tr>
+       <th>Package</th>
+       <th>Version</th>
+     </tr>
+     <tr>
+       <td>awscli</td>
+       <td>1.18.14</td>
+     </tr>
+     <tr>
+       <td>bash</td>
+       <td>5.0.11</td>
+     </tr>
+     <tr>
+       <td>boto3</td>
+       <td>1.12.16</td>
+     </tr>
+     <tr>
+       <td>git</td>
+       <td>2.24.1</td>
+     </tr>
+     <tr>
+       <td>jq</td>
+       <td>20191114-85-g260888d269</td>
+     </tr>
+     <tr>
+       <td>NodeJS</td>
+       <td>12.16.1</td>
+     </tr>
+     <tr>
+       <td>Python</td>
+       <td>3.8.1</td>
+     </tr>
+     <tr>
+       <td>serverless-framework</td>
+       <td>1.64.0</td>
+     </tr>
+     <tr>
+       <td>TypeScript</td>
+       <td>3.8.2</td>
+     </tr>
+     <tr>
+       <td>yarn</td>
+       <td>1.22.0</td>
+     </tr>
+   </table>
+
+   </details>
+
+- CloudFormation templates for aws-resources
+
+  <details><summary>
+  Expand/Collapse
+  </summary>
+
+  #### API Gateway
+
+  [![Launch in Ireland](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png) Ireland (eu-west-1)](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/quickcreate?templateURL=https://unfor19-serverless-template.s3-eu-west-1.amazonaws.com/cfn-apigateway.yml)
+
+  #### S3 Bucket
+
+  [![Launch in Ireland](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png) Ireland (eu-west-1)](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/quickcreate?templateURL=https://unfor19-serverless-template.s3-eu-west-1.amazonaws.com/cfn-s3.yml)
+
+        <details><summary>
+        More regions
+        </summary>
+
+  To deploy in other regions, replace AWS_REGION with the region's code.
+
+  **API Gateway**
+
+      ```bash
+      https://AWS_REGION.console.aws.amazon.com/cloudformation/home?region=AWS_REGION#/stacks/quickcreate?templateURL=https://
+      serverless-template.s3-eu-west-1.amazonaws.com/cfn-apigateway.yml
+      ```
+
+  **S3 Bucket**
+
+      ```bash
+      https://AWS_REGION.console.aws.amazon.com/cloudformation/home?region=AWS_REGION#/stacks/quickcreate?templateURL=https://
+      serverless-template.s3-eu-west-1.amazonaws.com/cfn-s3.yml
+      ```
+
+    </details>
+
+    </details>
 
 ## Contributing
 
