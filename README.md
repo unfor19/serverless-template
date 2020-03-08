@@ -11,122 +11,6 @@
 
 Boilerplate template for the serverless-framework.
 
-## Theory
-
-<details><summary><b>Expand/Collapse</b>
-
-</summary>
-
-### Concepts
-
-Learn how to use the Serverless Framework, while taking advantage of AWS Lambda Function, Lambda Layer, and API Gateway.
-
-#### AWS Lambda Function
-
-> _"AWS Lambda lets you run code without provisioning or managing servers. You pay only for the compute time you consume..."_ [[Source]](https://aws.amazon.com/lambda/)
-
-###### [Pricing](https://aws.amazon.com/lambda/pricing/), [Limits](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html), [CloudWatch Pricing](https://aws.amazon.com/cloudwatch/pricing/) and [S3 Pricing](https://aws.amazon.com/s3/pricing/)
-
----
-
-#### AWS Lambda Layer
-
-> _"...A layer is a ZIP archive that contains libraries, a [custom runtime](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html), or other dependencies. With layers, you can use libraries in your function without needing to include them in your deployment package..."_ [[Source]](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html)
-
-###### [S3 Pricing](https://aws.amazon.com/s3/pricing/)
-
----
-
-#### AWS API Gateway
-
-> _"...API Gateway handles all the tasks involved in accepting and processing up to hundreds of thousands of concurrent API calls, including traffic management, CORS support, authorization, and access control, throttling, monitoring, and API version management..."_ [[Source]](https://aws.amazon.com/api-gateway/)
-
-###### [Pricing](https://aws.amazon.com/api-gateway/pricing/) and [Limits](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html)
-
----
-
-#### Serverless Framework
-
-> _"The Serverless Framework helps you build serverless apps with radically less overhead and cost. It provides a powerful, unified experience to develop, deploy, test, secure and monitors your serverless applications..."_ [[Source]](https://serverless.com/framework/docs/)
-
-###### [Comparisons](https://serverless.com/learn/comparisons/)
-
-Eventually, the serverless framework produces [CloudFormation templates](https://aws.amazon.com/cloudformation/resources/templates/), deploys stacks, and manages them.
-
-**Tip** After deploying with the serverless framework, check the stacks' templates, they look like a total mess. If you want to 'prettify' those YAML templates, click on `View in Designer` > Move one of the components, and then look below, your template was automatically 'prettified'
-
-### Use Cases
-
-<details><summary>
-Serverless backend and Cron jobs
-</summary>
-
-![Serverless backend and Cron jobs](https://www.simform.com/wp-content/uploads/2018/08/Serverless-Examples-with-AWS-Lambda-Use-Cases.png 'Serverless backend and Cron jobs')
-
-[[Source]](https://www.simform.com/serverless-examples-aws-lambda-use-cases/)
-
-</details>
-
-<details><summary>
-Data processing
-</summary>
-
-![Data processing](https://d0.awsstatic.com/Test%20Images/MasonTests/Lambda/Lambda_FileProcessing.png 'Data processing')
-
-[[Source]](https://www.polyglotdeveloper.com/tools/2017-07-04-most-common-lambda-deployment-patterns/)
-
-</details>
-
-<details><summary>
-Lambda@Edge Increase web application security
-</summary>
-
-![Before](./assets/example-lambdaatedge-before.png 'Before')
-
-![After](./assets/example-lambdaatedge-after.png 'After')
-
-</details>
-
-###### [More use cases](https://serverless.com/learn/use-cases/)
-
-### APIs
-
-<details><summary>Project Tree
-</summary>
-
-![ProjectTree](./assets/project-tree-L3.png)
-
-</details>
-
-- Each API is an isolated service that contains multiple functions
-- All APIs share the same API Gateway - easier to manage
-- The file [serverless.common.yml](./serverless.common.yml) contains mappings that are relevant to all APIs, such as region, allow_origin, user_pool_id, and more
-
-#### APIs Structure
-
-- serverless.yml - configuration for deployment - [Using Layers](https://serverless.com/framework/docs/providers/aws/guide/layers#using-your-layers)
-- layer - deployed separately, these are the dependencies
-- src - source code of API that is deployed by serverless
-- package.json - contains the build, deploy and destroy scripts, and dev-dependencies
-- yarn.lock - contains the list of dev-dependencies and their versions
-
-### Layers
-
-- **Never run** `yarn add some_package` **in an API folder**
-- **Always use** `yarn add --dev some_package`**in an API folder**; Lambda Layer supplies the "real" dependencies
-- There's no need to create a layer for AWS SDK (e.g., aws-sdk, boto3) - These libraries are [provided by AWS automatically](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
-
-#### Layer Structure
-
-- serverless.yml - configuration for deploying the layer - [Deploying Layers](https://serverless.com/framework/docs/providers/aws/guide/layers#configuration)
-- package.json - contains the scripts for building, deploying and destroying the layer
-- nodejs/package.json - contains the dependencies that are uploaded with this layer
-- nodejs/yarn.lock - contains the list of dependencies and their versions
-
----
-
-</details>
-
 ## Requirements
 
 1. Install [Docker Engine](https://docs.docker.com/install/)
@@ -414,6 +298,120 @@ $ /code/services/greet-api (master) yarn deploy:dev
    ```bash
    $ /code/services/aws-resources (master) yarn destroy:dev
    ```
+
+## Theory
+
+<details><summary><b>Expand/Collapse</b>
+
+</summary>
+
+### Concepts
+
+Learn how to use the Serverless Framework, while taking advantage of AWS Lambda Function, Lambda Layer, and API Gateway.
+
+#### AWS Lambda Function
+
+> _"AWS Lambda lets you run code without provisioning or managing servers. You pay only for the compute time you consume..."_ [[Source]](https://aws.amazon.com/lambda/)
+
+###### [Pricing](https://aws.amazon.com/lambda/pricing/), [Limits](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html), [CloudWatch Pricing](https://aws.amazon.com/cloudwatch/pricing/) and [S3 Pricing](https://aws.amazon.com/s3/pricing/)
+
+---
+
+#### AWS Lambda Layer
+
+> _"...A layer is a ZIP archive that contains libraries, a [custom runtime](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html), or other dependencies. With layers, you can use libraries in your function without needing to include them in your deployment package..."_ [[Source]](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html)
+
+###### [S3 Pricing](https://aws.amazon.com/s3/pricing/)
+
+---
+
+#### AWS API Gateway
+
+> _"...API Gateway handles all the tasks involved in accepting and processing up to hundreds of thousands of concurrent API calls, including traffic management, CORS support, authorization, and access control, throttling, monitoring, and API version management..."_ [[Source]](https://aws.amazon.com/api-gateway/)
+
+###### [Pricing](https://aws.amazon.com/api-gateway/pricing/) and [Limits](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html)
+
+---
+
+#### Serverless Framework
+
+> _"The Serverless Framework helps you build serverless apps with radically less overhead and cost. It provides a powerful, unified experience to develop, deploy, test, secure and monitors your serverless applications..."_ [[Source]](https://serverless.com/framework/docs/)
+
+###### [Comparisons](https://serverless.com/learn/comparisons/)
+
+Eventually, the serverless framework produces [CloudFormation templates](https://aws.amazon.com/cloudformation/resources/templates/), deploys stacks, and manages them.
+
+**Tip** After deploying with the serverless framework, check the stacks' templates, they look like a total mess. If you want to 'prettify' those YAML templates, click on `View in Designer` > Move one of the components, and then look below, your template was automatically 'prettified'
+
+### Use Cases
+
+<details><summary>
+Serverless backend and Cron jobs
+</summary>
+
+![Serverless backend and Cron jobs](https://www.simform.com/wp-content/uploads/2018/08/Serverless-Examples-with-AWS-Lambda-Use-Cases.png 'Serverless backend and Cron jobs')
+
+[[Source]](https://www.simform.com/serverless-examples-aws-lambda-use-cases/)
+
+</details>
+
+<details><summary>
+Data processing
+</summary>
+
+![Data processing](https://d0.awsstatic.com/Test%20Images/MasonTests/Lambda/Lambda_FileProcessing.png 'Data processing')
+
+[[Source]](https://www.polyglotdeveloper.com/tools/2017-07-04-most-common-lambda-deployment-patterns/)
+
+</details>
+
+<details><summary>
+Lambda@Edge Increase web application security
+</summary>
+
+![Before](./assets/example-lambdaatedge-before.png 'Before')
+
+![After](./assets/example-lambdaatedge-after.png 'After')
+
+</details>
+
+###### [More use cases](https://serverless.com/learn/use-cases/)
+
+### APIs
+
+<details><summary>Project Tree
+</summary>
+
+![ProjectTree](./assets/project-tree-L3.png)
+
+</details>
+
+- Each API is an isolated service that contains multiple functions
+- All APIs share the same API Gateway - easier to manage
+- The file [serverless.common.yml](./serverless.common.yml) contains mappings that are relevant to all APIs, such as region, allow_origin, user_pool_id, and more
+
+#### APIs Structure
+
+- serverless.yml - configuration for deployment - [Using Layers](https://serverless.com/framework/docs/providers/aws/guide/layers#using-your-layers)
+- layer - deployed separately, these are the dependencies
+- src - source code of API that is deployed by serverless
+- package.json - contains the build, deploy and destroy scripts, and dev-dependencies
+- yarn.lock - contains the list of dev-dependencies and their versions
+
+### Layers
+
+- **Never run** `yarn add some_package` **in an API folder**
+- **Always use** `yarn add --dev some_package`**in an API folder**; Lambda Layer supplies the "real" dependencies
+- There's no need to create a layer for AWS SDK (e.g., aws-sdk, boto3) - These libraries are [provided by AWS automatically](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
+
+#### Layer Structure
+
+- serverless.yml - configuration for deploying the layer - [Deploying Layers](https://serverless.com/framework/docs/providers/aws/guide/layers#configuration)
+- package.json - contains the scripts for building, deploying and destroying the layer
+- nodejs/package.json - contains the dependencies that are uploaded with this layer
+- nodejs/yarn.lock - contains the list of dependencies and their versions
+
+</details>
 
 ---
 
