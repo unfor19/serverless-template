@@ -1,7 +1,7 @@
 # serverless-template
 
 <a href="https://github.com/unfor19/serverless-template#serverless-template">
-  <img src="./assets/serverless-template-logo-oneline.png" alt="Serverless-Template" width="100%" />
+  <img src="https://unfor19-serverless-template.s3-eu-west-1.amazonaws.com/assets/serverless-template-logo-oneline.png" alt="Serverless-Template" width="100%" />
 </a>
 
 [![GitHub version](https://badge.fury.io/gh/unfor19%2Fserverless-template.svg)](https://badge.fury.io/gh/unfor19%2Fserverless-template)
@@ -15,7 +15,7 @@ Boilerplate template for the serverless-framework.
 
 1. AWS account
 
-1. Install [Docker Engine](https://docs.docker.com/install/)
+1. [Docker Engine](https://docs.docker.com/install/)
 
 ## Getting Started
 
@@ -33,72 +33,72 @@ Both services have dependencies, and we'll use Lambda Layers to meet these depen
 
 </details>
 
-:arrow_down: Clone this repository (or [Use as template](https://github.com/unfor19/serverless-template/generate))
+1. **Clone** this repository (or [Use as template](https://github.com/unfor19/serverless-template/generate) and then clone)
 
-```bash
-$ (home) git clone https://github.com/unfor19/serverless-template.git
-```
+   ```bash
+   $ (home) git clone https://github.com/unfor19/serverless-template.git
+   ```
 
-:whale2: Use this [Docker image](https://hub.docker.com/r/unfor19/serverless-template)
+2. **Use this [Docker image](https://hub.docker.com/r/unfor19/serverless-template)**
 
    <details><summary>Image Usage Examples</summary>
 
-- With [aws-vault](https://github.com/99designs/aws-vault)
-  ```bash
-  $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
-  ```
-- AWS Environment variables
-  ```bash
-  $ (serverless-template) export AWS_SECRET_ACCESS_KEY=A123123
-  $ (serverless-template) export AWS_ACCESS_KEY_ID=B1232123123
-  $ (serverless-template) export AWS_REGION=eu-west-1
-  $ (serverless-template) export AWS_PROFILE=my-profile-name
-  $ (serverless-template) bash ./scripts/docker_run.sh
-  ```
-- AWS Credentials & Config files
+   - With [aws-vault](https://github.com/99designs/aws-vault)
+     ```bash
+     $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
+     ```
+   - AWS Environment variables
+     ```bash
+     $ (serverless-template) export AWS_SECRET_ACCESS_KEY=A123123
+     $ (serverless-template) export AWS_ACCESS_KEY_ID=B1232123123
+     $ (serverless-template) export AWS_REGION=eu-west-1
+     $ (serverless-template) export AWS_PROFILE=my-profile-name
+     $ (serverless-template) bash ./scripts/docker_run.sh
+     ```
+   - AWS Credentials & Config files
 
-  ```bash
-  $ (serverless-template) bash ./scripts/docker_run.sh
-  ```
+     ```bash
+     $ (serverless-template) bash ./scripts/docker_run.sh
+     ```
 
-**Tip**: Take a look at the [docker_run](./scripts/docker_run.sh) script
+   **Tip**: Take a look at the [docker_run](./scripts/docker_run.sh) script
 
    </details>
 
-```bash
-$ (serverless-template) bash ./scripts/docker_run.sh
-...                     # Pulling image ...
-$ /code (master)        # We're in!
-```
+   ```bash
+   $ (serverless-template) bash ./scripts/docker_run.sh
+   ...                     # Pulling image ...
+   $ /code (master)        # We're in!
+   ```
 
-:hammer: Build App - this includes installing dependencies
+3. **Build App** - this includes installing dependencies
 
-```bash
- $ /code (master) bash ./scripts/app_build.sh
- 🔎  Identifying services folders ...
- ...
- ✅  Finished
-```
+   ```bash
+   $ /code (master) bash ./scripts/app_build.sh
+   🔎  Identifying services folders ...
+   ...
+   ✅  Finished
+   ```
 
-:arrows_clockwise: Deploy AWS resources - S3 Bucket and API Gateway
+4. **Deploy AWS resources** - S3 Bucket and API Gateway
 
-```bash
-$ /code/aws-resources (master) yarn deploy:dev
-```
+   ```bash
+   $ /code/aws-resources (master) yarn deploy:dev
+   ```
 
-:arrows_clockwise: Deploy AWS Lambda Layers
+5. **Deploy AWS Lambda Layers**
 
-```bash
-$ /code/services/todo-api/layer (master)   yarn deploy:dev
-$ /code/services/greet-api/layer (master)  yarn deploy:dev
-```
+   ```bash
+   $ /code/services/todo-api/layer (master)   yarn deploy:dev
+   $ /code/services/greet-api/layer (master)  yarn deploy:dev
+   ```
 
-:arrows_clockwise: Deploy AWS Lambda Functions
+6. **Deploy AWS Lambda Functions**
 
-```bash
-$ /code/services/todo-api (master)  yarn deploy:dev
-$ /code/services/greet-api (master) yarn deploy:dev
-```
+   ```bash
+   $ /code/services/todo-api (master)  yarn deploy:dev
+   $ /code/services/greet-api (master) yarn deploy:dev
+   ```
 
 ## Usage
 
