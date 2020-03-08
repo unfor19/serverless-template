@@ -13,87 +13,9 @@ Boilerplate template for the serverless-framework.
 
 ## Requirements
 
+1. AWS account
+
 1. Install [Docker Engine](https://docs.docker.com/install/)
-
-1. Clone this repository
-
-1. Use this [Docker image](https://hub.docker.com/r/unfor19/serverless-template)
-
-    <details><summary>Image Packages
-      </summary>
-
-    <table>
-      <tr>
-        <th>Package</th>
-        <th>Version</th>
-      </tr>
-      <tr>
-        <td>awscli</td>
-        <td>1.18.14</td>
-      </tr>
-      <tr>
-        <td>bash</td>
-        <td>5.0.11</td>
-      </tr>
-      <tr>
-        <td>boto3</td>
-        <td>1.12.16</td>
-      </tr>       
-      <tr>
-        <td>git</td>
-        <td>2.24.1</td>
-      </tr>
-      <tr>
-        <td>jq</td>
-        <td>20191114-85-g260888d269</td>
-      </tr>      
-      <tr>
-        <td>NodeJS</td>
-        <td>12.16.1</td>
-      </tr>
-      <tr>
-        <td>Python</td>
-        <td>3.8.1</td>
-      </tr>
-      <tr>
-        <td>serverless-framework</td>
-        <td>1.64.0</td>
-      </tr>
-      <tr>
-        <td>TypeScript</td>
-        <td>3.8.2</td>
-      </tr>
-      <tr>
-        <td>yarn</td>
-        <td>1.22.0</td>
-      </tr>    
-    </table>
-
-    </details>
-
-   <details><summary>Image Usage Examples</summary>
-
-   - With [aws-vault](https://github.com/99designs/aws-vault)
-     ```bash
-     $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
-     ```
-   - AWS Environment variables
-     ```bash
-     $ (serverless-template) export AWS_SECRET_ACCESS_KEY=A123123
-     $ (serverless-template) export AWS_ACCESS_KEY_ID=B1232123123
-     $ (serverless-template) export AWS_REGION=eu-west-1
-     $ (serverless-template) export AWS_PROFILE=sls-template-dev
-     $ (serverless-template) bash ./scripts/docker_run.sh
-     ```
-   - AWS Credentials & Config files
-
-     ```bash
-     $ (serverless-template) bash ./scripts/docker_run.sh
-     ```
-
-   **Tip**: Take a look at the [docker_run](./scripts/docker_run.sh) script
-
-   </details>
 
 ## Getting Started
 
@@ -111,12 +33,42 @@ Both services have dependencies, and we'll use Lambda Layers to meet these depen
 
 </details>
 
-:whale2: Run Container
+:arrow_down: Clone this repository (or [Use as template](https://github.com/unfor19/serverless-template/generate))
 
 ```bash
-$ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
+$ (home) git clone https://github.com/unfor19/serverless-template.git
+```
+
+:whale2: Use this [Docker image](https://hub.docker.com/r/unfor19/serverless-template)
+
+   <details><summary>Image Usage Examples</summary>
+
+- With [aws-vault](https://github.com/99designs/aws-vault)
+  ```bash
+  $ (serverless-template) aws-vault exec PROFILE_NAME -- bash ./scripts/docker_run.sh
+  ```
+- AWS Environment variables
+  ```bash
+  $ (serverless-template) export AWS_SECRET_ACCESS_KEY=A123123
+  $ (serverless-template) export AWS_ACCESS_KEY_ID=B1232123123
+  $ (serverless-template) export AWS_REGION=eu-west-1
+  $ (serverless-template) export AWS_PROFILE=my-profile-name
+  $ (serverless-template) bash ./scripts/docker_run.sh
+  ```
+- AWS Credentials & Config files
+
+  ```bash
+  $ (serverless-template) bash ./scripts/docker_run.sh
+  ```
+
+**Tip**: Take a look at the [docker_run](./scripts/docker_run.sh) script
+
+   </details>
+
+```bash
+$ (serverless-template) bash ./scripts/docker_run.sh
 ...                     # Pulling image ...
-$ /code (master)         # We're in!
+$ /code (master)        # We're in!
 ```
 
 :hammer: Build App - this includes installing dependencies
@@ -423,10 +375,64 @@ Lambda@Edge Increase web application security
 - [AWS Blog - Best Practices for Developing on AWS Lambda
   ](https://aws.amazon.com/blogs/architecture/best-practices-for-developing-on-aws-lambda/)
 - [Git Repo - AWS Serverless Workshops](https://github.com/aws-samples/aws-serverless-workshops)
+- [serverless-template Docker image](https://hub.docker.com/r/unfor19/serverless-template) packages
+
+   <details><summary>Expand/Collapse
+     </summary>
+
+   <table>
+     <tr>
+       <th>Package</th>
+       <th>Version</th>
+     </tr>
+     <tr>
+       <td>awscli</td>
+       <td>1.18.14</td>
+     </tr>
+     <tr>
+       <td>bash</td>
+       <td>5.0.11</td>
+     </tr>
+     <tr>
+       <td>boto3</td>
+       <td>1.12.16</td>
+     </tr>
+     <tr>
+       <td>git</td>
+       <td>2.24.1</td>
+     </tr>
+     <tr>
+       <td>jq</td>
+       <td>20191114-85-g260888d269</td>
+     </tr>
+     <tr>
+       <td>NodeJS</td>
+       <td>12.16.1</td>
+     </tr>
+     <tr>
+       <td>Python</td>
+       <td>3.8.1</td>
+     </tr>
+     <tr>
+       <td>serverless-framework</td>
+       <td>1.64.0</td>
+     </tr>
+     <tr>
+       <td>TypeScript</td>
+       <td>3.8.2</td>
+     </tr>
+     <tr>
+       <td>yarn</td>
+       <td>1.22.0</td>
+     </tr>
+   </table>
+
+   </details>
+
 - CloudFormation templates for aws-resources
 
   <details><summary>
-  CloudFormation templates
+  Expand/Collapse
   </summary>
 
   #### API Gateway
