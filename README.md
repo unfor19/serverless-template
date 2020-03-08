@@ -247,6 +247,8 @@ $ /code/services/greet-api (master) yarn deploy:dev
 
 1. Destroy S3 Bucket and API Gateway
 
+   **IMPORTANT** - remove all the objects from the `todo` S3 bucket before taking this action
+
    ```bash
    $ /code/services/aws-resources (master) yarn destroy:dev
    ```

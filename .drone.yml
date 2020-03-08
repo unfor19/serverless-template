@@ -124,7 +124,6 @@ steps:
     commands:
       - APIGW_ID=$(bash ./scripts/get_apigw_endpoint.sh serverless-template-rest-api-dev)
       - APIGATEWAY_ENDPOINT="https://$APIGW_ID.execute-api.$AWS_REGION.amazonaws.com"
-      - echo $APIGATEWAY_ENDPOINT
       - MY_CONTENT="some content"
       - RESULT=$(curl --silent --location --request POST $APIGATEWAY_ENDPOINT/dev/todo/create --header 'Content-Type:application/json' --data-raw '{ "content":"'"$MY_CONTENT"'" }')
       - echo $RESULT
@@ -135,101 +134,94 @@ steps:
       - deploy-aws-resources
       - deploy-api-functions
       - deploy-api-lambda-layers
-
-  - name: cleanup-todo-api-functions
-    image: unfor19/serverless-template:latest
-    environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
-      AWS_REGION:
-        from_secret: aws_region
-      AWS_DEFAULT_REGION:
-        from_secret: aws_region
-    commands:
-      - PROJECT_DIR="$PWD"
-      - cd "$PROJECT_DIR/services/todo-api" && yarn destroy:dev
-    depends_on:
-      - usage
-
-  - name: cleanup-greet-api-functions
-    image: unfor19/serverless-template:latest
-    environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
-      AWS_REGION:
-        from_secret: aws_region
-      AWS_DEFAULT_REGION:
-        from_secret: aws_region
-    commands:
-      - PROJECT_DIR="$PWD"
-      - cd "$PROJECT_DIR/services/greet-api" && yarn destroy:dev
-    depends_on:
-      - usage
-
-  - name: cleanup-api-functions
-    image: unfor19/serverless-template:latest
-    depends_on:
-      - cleanup-todo-api-functions
-      - cleanup-greet-api-functions
-
-  - name: cleanup-todo-api-lambda-layer
-    image: unfor19/serverless-template:latest
-    environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
-      AWS_REGION:
-        from_secret: aws_region
-      AWS_DEFAULT_REGION:
-        from_secret: aws_region
-    commands:
-      - PROJECT_DIR="$PWD"
-      - cd "$PROJECT_DIR/services/todo-api/layer" && yarn destroy:dev
-    depends_on:
-      - usage
-
-  - name: cleanup-greet-api-lambda-layer
-    image: unfor19/serverless-template:latest
-    environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
-      AWS_REGION:
-        from_secret: aws_region
-      AWS_DEFAULT_REGION:
-        from_secret: aws_region
-    commands:
-      - PROJECT_DIR="$PWD"
-      - cd "$PROJECT_DIR/services/greet-api/layer" && yarn destroy:dev
-    depends_on:
-      - usage
-
-  - name: cleanup-api-lambda-layers
-    image: unfor19/serverless-template:latest
-    depends_on:
-      - cleanup-todo-api-lambda-layer
-      - cleanup-greet-api-lambda-layer
-
-  - name: cleanup-aws-resources
-    image: unfor19/serverless-template:latest
-    environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
-      AWS_REGION:
-        from_secret: aws_region
-      AWS_DEFAULT_REGION:
-        from_secret: aws_region
-    commands:
-      - PROJECT_DIR="$PWD"
-      - cd "$PROJECT_DIR/aws-resources" && yarn destroy:dev
-    depends_on:
-      - usage
-      - cleanup-api-functions
+  # - name: cleanup-todo-api-functions
+  #   image: unfor19/serverless-template:latest
+  #   environment:
+  #     AWS_ACCESS_KEY_ID:
+  #       from_secret: aws_access_key_id
+  #     AWS_SECRET_ACCESS_KEY:
+  #       from_secret: aws_secret_access_key
+  #     AWS_REGION:
+  #       from_secret: aws_region
+  #     AWS_DEFAULT_REGION:
+  #       from_secret: aws_region
+  #   commands:
+  #     - PROJECT_DIR="$PWD"
+  #     - cd "$PROJECT_DIR/services/todo-api" && yarn destroy:dev
+  #   depends_on:
+  #     - usage
+  # - name: cleanup-greet-api-functions
+  #   image: unfor19/serverless-template:latest
+  #   environment:
+  #     AWS_ACCESS_KEY_ID:
+  #       from_secret: aws_access_key_id
+  #     AWS_SECRET_ACCESS_KEY:
+  #       from_secret: aws_secret_access_key
+  #     AWS_REGION:
+  #       from_secret: aws_region
+  #     AWS_DEFAULT_REGION:
+  #       from_secret: aws_region
+  #   commands:
+  #     - PROJECT_DIR="$PWD"
+  #     - cd "$PROJECT_DIR/services/greet-api" && yarn destroy:dev
+  #   depends_on:
+  #     - usage
+  # - name: cleanup-api-functions
+  #   image: unfor19/serverless-template:latest
+  #   depends_on:
+  #     - cleanup-todo-api-functions
+  #     - cleanup-greet-api-functions
+  # - name: cleanup-todo-api-lambda-layer
+  #   image: unfor19/serverless-template:latest
+  #   environment:
+  #     AWS_ACCESS_KEY_ID:
+  #       from_secret: aws_access_key_id
+  #     AWS_SECRET_ACCESS_KEY:
+  #       from_secret: aws_secret_access_key
+  #     AWS_REGION:
+  #       from_secret: aws_region
+  #     AWS_DEFAULT_REGION:
+  #       from_secret: aws_region
+  #   commands:
+  #     - PROJECT_DIR="$PWD"
+  #     - cd "$PROJECT_DIR/services/todo-api/layer" && yarn destroy:dev
+  #   depends_on:
+  #     - usage
+  # - name: cleanup-greet-api-lambda-layer
+  #   image: unfor19/serverless-template:latest
+  #   environment:
+  #     AWS_ACCESS_KEY_ID:
+  #       from_secret: aws_access_key_id
+  #     AWS_SECRET_ACCESS_KEY:
+  #       from_secret: aws_secret_access_key
+  #     AWS_REGION:
+  #       from_secret: aws_region
+  #     AWS_DEFAULT_REGION:
+  #       from_secret: aws_region
+  #   commands:
+  #     - PROJECT_DIR="$PWD"
+  #     - cd "$PROJECT_DIR/services/greet-api/layer" && yarn destroy:dev
+  #   depends_on:
+  #     - usage
+  # - name: cleanup-api-lambda-layers
+  #   image: unfor19/serverless-template:latest
+  #   depends_on:
+  #     - cleanup-todo-api-lambda-layer
+  #     - cleanup-greet-api-lambda-layer
+  # - name: cleanup-aws-resources
+  #   image: unfor19/serverless-template:latest
+  #   environment:
+  #     AWS_ACCESS_KEY_ID:
+  #       from_secret: aws_access_key_id
+  #     AWS_SECRET_ACCESS_KEY:
+  #       from_secret: aws_secret_access_key
+  #     AWS_REGION:
+  #       from_secret: aws_region
+  #     AWS_DEFAULT_REGION:
+  #       from_secret: aws_region
+  #   commands:
+  #     - PROJECT_DIR="$PWD"
+  #     - cd "$PROJECT_DIR/aws-resources" && yarn destroy:dev
+  #   depends_on:
+  #     - usage
+  #     - cleanup-api-functions
