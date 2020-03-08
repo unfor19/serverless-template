@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Description: |
   serverless-template - Creates a private S3 Bucket
 Parameters:
@@ -17,7 +17,7 @@ Parameters:
 Resources:
   TodoBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
+    DeletionPolicy: Delete
     Properties:
       PublicAccessBlockConfiguration:
         BlockPublicAcls: True
@@ -31,4 +31,4 @@ Outputs:
   TodoBucketName:
     Value: !Ref TodoBucket
     Export:
-      Name: !Sub '${AppName}-todos-${Stage}'
+      Name: !Sub "${AppName}-todos-${Stage}"

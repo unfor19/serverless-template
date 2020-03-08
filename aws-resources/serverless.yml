@@ -1,6 +1,6 @@
 service: serverless-template-resources
 
-frameworkVersion: '>=1.1.0 <2.0.0'
+frameworkVersion: ">=1.1.0 <2.0.0"
 
 custom:
   common_mappings: ${file(../serverless.common.yml):custom}
@@ -16,14 +16,14 @@ resources:
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
       Properties:
-        Name: '${self:custom.common_mappings.appname}-rest-api-${self:provider.stage}'
+        Name: "${self:custom.common_mappings.appname}-rest-api-${self:provider.stage}"
         Tags:
           - Key: serverless-template
             Value: True
 
     TodoBucket:
       Type: AWS::S3::Bucket
-      DeletionPolicy: Retain
+      DeletionPolicy: Delete
       Properties:
         PublicAccessBlockConfiguration:
           BlockPublicAcls: True
@@ -41,15 +41,15 @@ resources:
           - ApiGatewayRestApi
           - RootResourceId
       Export:
-        Name: !Sub '${self:custom.common_mappings.appname}-ApiGatewayRestApiRootResourceId-${self:provider.stage}'
+        Name: !Sub "${self:custom.common_mappings.appname}-ApiGatewayRestApiRootResourceId-${self:provider.stage}"
     ApiGatewayRestApiId:
       Value:
         Ref: ApiGatewayRestApi
       Export:
-        Name: '${self:custom.common_mappings.appname}-ApiGatewayRestApiId-${self:provider.stage}'
+        Name: "${self:custom.common_mappings.appname}-ApiGatewayRestApiId-${self:provider.stage}"
     TodoBucketRegionalDomainName:
       Value: !GetAtt TodoBucket.RegionalDomainName
     TodoBucketName:
       Value: !Ref TodoBucket
       Export:
-        Name: '${self:custom.common_mappings.appname}-todos-${self:provider.stage}'
+        Name: "${self:custom.common_mappings.appname}-todos-${self:provider.stage}"
