@@ -445,9 +445,9 @@ Lambda@Edge Increase web application security
 
   [![Launch in Ireland](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png) Ireland (eu-west-1)](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/quickcreate?templateURL=https://unfor19-serverless-template.s3-eu-west-1.amazonaws.com/cfn-s3.yml)
 
-        <details><summary>
-        More regions
-        </summary>
+  <details><summary>
+  More regions
+  </summary>
 
   To deploy in other regions, replace AWS_REGION with the region's code.
 
