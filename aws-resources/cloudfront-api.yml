@@ -1,0 +1,429 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  Sets up a CloudFront distribution with a given API Gateway as a custom origin and a Cloudwatch Events Scheduled job to rotate API Keys. 
+  **NOTICE** Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
+  http://www.apache.org/licenses/LICENSE-2.0.
+  Original copy https://s3.amazonaws.com/computeblog-us-east-1/apigateway-waf2/cfn-cloudfront-apigw2.yaml
+  The modification to the original copy are exlpained in the README.md file
+
+Parameters:
+  AppName:
+    Type: String
+    Description: Will be used in AccessLog Bucket name
+    Default: serverless-template
+  Stage:
+    Type: String
+    Description: Select the stage to deploy
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    ConstraintDescription: Must be any of the available options
+  AcmCertificateArn:
+    Type: String
+    NoEcho: True
+
+  ApiKeyRotationSchedule:
+    Description: Schedule to rotate API Keys e.g. Daily, Monthly, Bimonthly basis
+    Type: String
+    Default: Monthly
+    AllowedValues:
+      - Daily
+      - Fortnightly
+      - Monthly
+      - Bimonthly
+      - Quarterly
+    ConstraintDescription: Must be any of the available options
+
+  Timestamp:
+    Type: String
+    Description: Fill in this format YYYY-MM-DD
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "General Details"
+        Parameters:
+          - AppName
+          - Stage
+      - Label:
+          default: "Rotating API Keys"
+        Parameters:
+          - ApiKeyRotationSchedule
+          - Timestamp
+    ParameterLabels:
+      ApiKeyRotationSchedule:
+        default: "How often should I rotate?"
+      Timestamp:
+        default: "Timestamp to be appended in API Key"
+
+Mappings:
+  ScheduleMap:
+    CloudwatchEvents: # You can find more granular intervals at Amazon CloudWatch Scheduled Events doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+      Daily: "rate(1 day)"
+      Fortnightly: "rate(14 days)"
+      Monthly: "rate(30 days)"
+      Bimonthly: "rate(60 days)"
+      Quarterly: "rate(90 days)"
+
+  StageMap:
+    dev:
+      "CFPriceClass": "PriceClass_100"
+      "DomainName": "dev.api.serverless-template.meirg.co.il"
+      "WebACLId": ""
+    staging:
+      "CFPriceClass": "PriceClass_100"
+      "DomainName": ""
+      "WebACLId": ""
+    prod:
+      "CFPriceClass": "PriceClass_100"
+      "DomainName": ""
+      "WebACLId": ""
+
+Resources:
+  AccessLogBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub "${AppName}-cloudfront-api-access-logs-${Stage}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      LifecycleConfiguration:
+        Rules:
+          - Id: StandardIARule
+            Prefix: standardia
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 30
+                StorageClass: STANDARD_IA
+          - Id: GlacierRule
+            Prefix: glacier
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 60
+                StorageClass: GLACIER
+
+  CFDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        PriceClass: !FindInMap [StageMap, !Ref Stage, CFPriceClass]
+        Aliases:
+          - !FindInMap [StageMap, !Ref Stage, DomainName]
+        Logging:
+          IncludeCookies: false
+          Bucket: !Sub "${AppName}-cloudfront-api-access-logs-${Stage}.s3.${AWS::URLSuffix}"
+          Prefix: AWSLogs/
+        Enabled: true
+        Comment: !Sub "API-Gateway-${Stage}"
+        Origins:
+          - Id: ApiGateway
+            DomainName:
+              Fn::Sub:
+                - "${ApiID}.execute-api.${AWS::Region}.${AWS::URLSuffix}"
+                - ApiID:
+                    Fn::ImportValue: !Sub "${AppName}-ApiGatewayRestApiId-${Stage}"
+            OriginPath: !Sub "/${Stage}"
+            CustomOriginConfig:
+              HTTPPort: 443
+              OriginProtocolPolicy: https-only
+            OriginCustomHeaders:
+              - HeaderName: x-api-key
+                HeaderValue: !GetAtt GetApiKeyValue.Value
+        ViewerCertificate:
+          AcmCertificateArn: !Ref AcmCertificateArn
+          SslSupportMethod: sni-only
+        WebACLId: !FindInMap [StageMap, !Ref Stage, WebACLId]
+        DefaultCacheBehavior:
+          TargetOriginId: ApiGateway
+          ForwardedValues:
+            Headers:
+              - Accept
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Authorization
+              - Origin
+            QueryString: true
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - DELETE
+            - GET
+            - HEAD
+            - OPTIONS
+            - PATCH
+            - POST
+            - PUT
+          DefaultTTL: 30
+          MinTTL: 0
+          MaxTTL: 300
+      Tags:
+        - Key: CloudFormation
+          Value: "True"
+        - Key: Stage
+          Value: !Ref Stage
+
+  ApiUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      Description: CloudFront usage only
+      UsagePlanName: CloudFront_only
+      ApiStages:
+        - ApiId:
+            Fn::ImportValue: !Sub "${AppName}-ApiGatewayRestApiId-${Stage}"
+          Stage: !Sub "${Stage}"
+
+  ApiKey:
+    Type: "AWS::ApiGateway::ApiKey"
+    Properties:
+      Name: !Sub "${AWS::StackName}-${Timestamp}"
+      Description: !Sub "CloudFormation API Key ${Timestamp}"
+      Enabled: true
+      GenerateDistinctId: false
+
+  ApiKeyUsagePlan:
+    Type: "AWS::ApiGateway::UsagePlanKey"
+    Properties:
+      KeyId: !Ref ApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref ApiUsagePlan
+
+  # Custom Resource to retrieve API Key value instead of ID
+
+  GetApiKeyValue:
+    DependsOn: "ApiKey"
+    Type: Custom::ApiKeyValue
+    Properties:
+      ServiceToken: !GetAtt GetApiKeyValueFunction.Arn
+      Timestamp: !Ref Timestamp
+
+  GetApiKeyValueFunctionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AllowLambdaServiceToAssumeRole"
+            Effect: "Allow"
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+      Policies:
+        - PolicyName: RotateKeysPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "apigateway:GET"
+                Resource: "*"
+
+  GetApiKeyValueFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Handler: "index.lambda_handler"
+      Role: !GetAtt GetApiKeyValueFunctionRole.Arn
+      Runtime: python3.6
+      Timeout: 120
+      Environment:
+        Variables:
+          API_KEY: !Ref ApiKey
+      Code:
+        ZipFile: |
+          import datetime
+          import os
+
+          import boto3
+          import cfnresponse
+          from botocore.exceptions import ClientError
+
+          session = boto3.Session()
+          apigw = session.client('apigateway')
+
+
+          def lambda_handler(event, context):
+            request_type = event['RequestType']
+            request_type_allowed = ["Update", "Create"]
+            from pprint import pprint
+            responseData = {}
+
+            print("Cloudformation Operation ==> ", request_type)
+
+            if request_type in request_type_allowed:
+              try:
+                api_key = apigw.get_api_key(apiKey=os.getenv("API_KEY"), includeValue=True)
+                responseData = {'Value': api_key['value']}
+                cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+              except ClientError as err:
+                responseData = {"Error": "{}".format(err)}
+                cfnresponse.send(event, context, cfnresponse.FAILED, responseData)
+            else:
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+
+  # API Key Rotation Lambda Function, Permissions and Schedule
+
+  RotateApiKeysFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Handler: "index.lambda_handler"
+      Role: !GetAtt RotateApiKeysFunctionRole.Arn
+      Runtime: python3.6
+      Environment:
+        Variables:
+          StackName: !Ref "AWS::StackName"
+      Code:
+        ZipFile: |
+          import datetime
+          import os
+
+          import boto3
+          from botocore.exceptions import ClientError
+
+          session = boto3.Session()
+          cfn = session.client('cloudformation')
+
+          timestamp = datetime.date.today()
+          params = {
+              'StackName': os.getenv('StackName'),
+              'UsePreviousTemplate': True,
+              'Capabilities': ["CAPABILITY_IAM"],
+              'Parameters': [
+                  {
+                    'ParameterKey': 'AppName',
+                    'UsePreviousValue': True
+                  },
+                  {
+                    'ParameterKey': 'Stage',
+                    'UsePreviousValue': True
+                  },
+                  {
+                    'ParameterKey': 'ApiKeyRotationSchedule',
+                    'UsePreviousValue': True
+                  },
+                  {
+                    'ParameterKey': 'Timestamp',
+                    'ParameterValue': str(timestamp)
+                  },
+              ],
+          }
+
+          def lambda_handler(event, context):
+            """ Updates CloudFormation Stack with a new timestamp and returns CloudFormation response"""
+            try:
+                response = cfn.update_stack(**params)
+            except ClientError as err:
+                if "No updates are to be performed" in err.response['Error']['Message']:
+                    return {"message": err.response['Error']['Message']}
+                else:
+                    raise Exception("An error happened whilst updating the stack: {}".format(err))
+
+            return response"
+
+  RotateApiKeysFunctionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AllowLambdaServiceToAssumeRole"
+            Effect: "Allow"
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+      Policies:
+        - PolicyName: RotateKeysPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "cloudformation:UpdateStack"
+                Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*"
+              - Effect: Allow
+                Action:
+                  - "lambda:UpdateFunctionConfiguration"
+                  - "lambda:InvokeFunction"
+                Resource: !GetAtt GetApiKeyValueFunction.Arn
+              - Effect: Allow
+                Action:
+                  - "cloudfront:GetDistribution"
+                  - "cloudfront:UpdateDistribution"
+                Resource: !Sub
+                  - "arn:aws:cloudfront::*:distribution/${DistributionRed}"
+                  - { DistributionRed: !Ref CFDistribution }
+              - Effect: Allow
+                Action:
+                  - "apigateway:GET"
+                  - "apigateway:HEAD"
+                  - "apigateway:OPTIONS"
+                  - "apigateway:PATCH"
+                  - "apigateway:DELETE"
+                  - "apigateway:POST"
+                  - "apigateway:PUT"
+                  - "iam:GetRole"
+                  - "iam:PassRole"
+                  - "lambda:GetFunctionConfiguration"
+                Resource: "*"
+
+  RotateApiKeysScheduledJob:
+    Type: "AWS::Events::Rule"
+    Properties:
+      Description: "ScheduledRule"
+      ScheduleExpression:
+        !FindInMap [ScheduleMap, CloudwatchEvents, !Ref ApiKeyRotationSchedule]
+      State: "ENABLED"
+      Targets:
+        - Arn: !GetAtt RotateApiKeysFunction.Arn
+          Id: "RotateApiKeys"
+
+  RotateApiKeysScheduledJobPermissions:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      FunctionName: !Ref RotateApiKeysFunction
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt RotateApiKeysScheduledJob.Arn
+
+Outputs:
+  CFDistributionURL:
+    Description: CloudFront Domain URL
+    Value: !Sub "${CFDistribution.DomainName}"
+    Export:
+      Name: !Sub "${AppName}-cloudfront-api-url-${Stage}"
+
+  ApiUsagePlanId:
+    Description: API Gateway Usage Plan
+    Value: !Ref ApiUsagePlan
+
+  RotateApiKeysFunction:
+    Description: Lambda function that rotates API Key
+    Value: !GetAtt RotateApiKeysFunction.Arn
+
+  RotateApiKeysFunctionRole:
+    Description: Lambda function IAM Role
+    Value: !GetAtt RotateApiKeysFunctionRole.Arn
+
+  DomainName:
+    Description: The domain name that will be used in Route53
+    Value: !FindInMap [StageMap, !Ref Stage, DomainName]
+    Export:
+      Name: !Sub "${AppName}-cloudfront-api-domainname-${Stage}"
+
+  DistributionId:
+    Description: CloudFront distribution id
+    Value: !Ref CFDistribution
+    Export:
+      Name: !Sub "${AppName}-cloudfront-api-id-${Stage}"

@@ -10,7 +10,7 @@ custom:
     dev: nodejs12.x
     staging: nodejs12.x
     prod: nodejs12.x
-  requireApiKey:
+  require_api_key:
     local: false
     dev: true
     staging: true
