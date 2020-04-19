@@ -250,7 +250,7 @@ $ /code/services/greet-api (master) yarn deploy:dev
    **IMPORTANT** - remove all the objects from the `todo` S3 bucket before taking this action
 
    ```bash
-   $ /code/services/aws-resources (master) yarn destroy:dev
+   $ /code/aws-resources (master) yarn destroy:dev
    ```
 
 ## Theory
