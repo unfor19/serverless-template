@@ -10,3 +10,4 @@ __pycache__/
 *.zip
 dist/
 !.drone.yml
+*.template

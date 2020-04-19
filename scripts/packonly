@@ -1,0 +1,126 @@
+#!/bin/bash
+
+app_name=serverless-template
+s3_temp_bucket="serverless-template-cfn-eu-west-1"
+stage=
+service_name=
+region=eu-west-1 # Ireland
+branch=
+timestamp=$(date '+%Y-%m-%d')
+domain=
+viewer_response=
+viewer_request=
+
+usage()
+{
+  cat << EOF
+usage: bash ./scripts/packndeploy -n service_name -s stage -p vault_profie_name
+-n    | --service_name      (Required)            Service to deploy
+-s    | --stage             (Required)            Stage to deploy
+-b    | --branch            (Pipeline)            Source branch
+-d    | --domain            (Certificate Manager) Requested domain name
+-vres | --viewer_response   (CloudFront-UI)       Lambda Function ARN
+-vreq | --viewer_request    (CloudFront-UI)       Lambda Function ARN
+-cert | --certificate_arn   (CloudFront)          ACM Certificate Arn
+-r    | --region            (us-west-2)           Region to deploy
+-a    | --app_name          (my-app)              App name
+-h    | --help                                    Brings up this menu
+EOF
+}
+
+error (){
+    local msg=$1
+    echo -e "\033[31mFATA[0000]\e[0m ${msg}"
+    usage
+    exit
+}
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -n | --service_name )
+            shift
+            service_name=$1
+        ;;
+        -s | --stage )
+            shift
+            stage=$1
+        ;;
+        -b | --branch )
+            shift
+            branch=$1
+        ;;
+        -r | --region )
+            shift
+            region=$1
+        ;;
+        -a | --app_name )
+            shift
+            app_name=$1
+        ;;
+        -d | --domain )
+            shift
+            domain=$1
+        ;;
+        -cert | --certificate_arn )
+            shift
+            certificate_arn=$1
+        ;;        
+        -vreq | --viewer_request )
+            shift
+            viewer_request=$1
+        ;;
+        -vres | --viewer_response )
+            shift
+            viewer_response=$1
+        ;;                     
+        -h | --help )  usage
+            exit
+        ;;
+        * )  usage
+            exit 1
+    esac
+    shift
+done
+
+[[ -z $s3_temp_bucket ]] && error "Edit the file ./scripts/packonly and set the s3_temp_bucket variable."
+[[ -z $service_name ]] && error "Service name is required, provide it with the flag: -n service_name"
+[[ -z $stage ]] && error "Stage is required, provide it with the flag: -s stage"
+
+filename="$service_name.yml"
+[[ ! -f "./aws-resources/$filename" ]] && error"File does not exist, make sure the service name matches the yml file name."
+
+is_pipeline=$(echo "$filename" | grep "pipeline-")
+is_pipeline_ui=$(echo "$filename" | grep "pipeline-ui")
+is_pipeline_api=$(echo "$filename" | grep "pipeline-api")
+is_certificate_manager=$(echo "$filename" | grep "certificatemanager")
+is_cloudfront_ui=$(echo "$filename" | grep "cloudfront-ui")
+is_cloudfront_api=$(echo "$filename" | grep "cloudfront-api")
+
+[[ ! -z $is_pipeline && -z $branch ]] && error "Branch is required for deploying a pipeline, provide it with the flag: -b branch"
+
+
+# if [ ! -z $is_cloudfrontui ]; then
+#     if [ -z $viewer_request ]; then
+#         echo "ViewerRequest is required for deploying a cloudfront-ui, provide it with the flag: -vreq lambdaArn"
+#         exit
+#     fi
+#     if [ -z $viewer_response ]; then
+#         echo "ViewerResponse is required for deploying a cloudfront-ui, provide it with the flag: -vres lambdaArn"
+#         exit
+#     fi
+# fi
+
+rm -f ./aws-resources/${app_name}-${service_name}-${stage}.template
+package=$(aws cloudformation package \
+    --template-file "./aws-resources/${filename}" \
+    --s3-bucket "${s3_temp_bucket}" \
+--output-template-file "./aws-resources/${app_name}-${service_name}-${stage}.template")
+package_success=$(echo $package | grep "YOUR STACK NAME")
+
+if [ -z "${package_success}" ]; then
+    echo "${package}"
+    echo "Failed to create package, fix the above."
+    exit
+fi
+
+echo "Successfully created the package."
