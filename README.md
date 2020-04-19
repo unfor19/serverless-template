@@ -483,7 +483,7 @@ Pull requests are welcome! Ideally, create a feature branch and issue for every 
 
 ## Connect
 
-- [Discord - ProdOps.io](https://discordapp.com/invite/nuxBfKm) - No sign-up process! Ask questions in #serverless
+- [Facebook - Operations Israel](https://www.facebook.com/groups/ops.il)
 
 - [Slack - Serverless Contributors](http://serverless-contrib.slack.com/) - Ask us questions in #help or #general - tag `@Meir Gabay`
 
