@@ -15,7 +15,7 @@ Boilerplate template for the serverless-framework.
 
 1. AWS account
 
-1. [Docker Engine](https://docs.docker.com/install/)
+1. [Docker](https://docs.docker.com/install/)
 
 ## Getting Started
 
