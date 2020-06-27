@@ -11,6 +11,8 @@
 
 Boilerplate template for the serverless-framework.
 
+Want to learn how to get start with the serverless framework? Watch my [YouTube video], where I explain about how to use the framework, while using this GitHub repository.
+
 ## Requirements
 
 1. AWS account
