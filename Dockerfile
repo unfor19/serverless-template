@@ -1,5 +1,5 @@
 FROM nikolaik/python-nodejs:python3.8-nodejs12-alpine
-RUN yarn global add serverless typescript && \
+RUN yarn global add serverless@1.64.0 typescript@3.8.2 && \
     pip3 install awscli --upgrade --no-cache-dir && \
     apk --no-cache add jq curl bash bash-completion apache2-utils git zip unzip
 
