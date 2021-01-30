@@ -2,7 +2,7 @@ service: serverless-template-greet-api-layer
 package:
   individually: true
 
-frameworkVersion: '>=1.1.0 <2.0.0'
+frameworkVersion: '>=1.64.0 <3.0.0'
 
 custom:
   common_mappings: ${file(../../../serverless.common.yml):custom}
