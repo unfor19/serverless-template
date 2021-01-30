@@ -1,6 +1,5 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-// const WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
 module.exports = {
   target: 'node',
@@ -34,7 +33,6 @@ module.exports = {
     libraryTarget: 'commonjs',
   },
   plugins: [
-    // new WebpackCleanupPlugin(),
     new ZipPlugin({
       filename: 'dist_todo.zip',
     }),

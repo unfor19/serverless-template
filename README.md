@@ -419,7 +419,7 @@ Lambda@Edge Increase web application security
      </tr>
      <tr>
        <td>serverless-framework</td>
-       <td>1.64.0</td>
+       <td>2.21.1</td>
      </tr>
      <tr>
        <td>TypeScript</td>
